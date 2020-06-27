@@ -8,8 +8,9 @@ services:
       - ./reverse_proxy/html:/var/www/html
     ports:
       - "5000:80"
-    links:
-      - bot:bot
+    depends_on:
+      - bot
+      - liff
     tty: true
     environment:
       TZ: Asia/Tokyo
@@ -21,3 +22,12 @@ services:
     environment:
       TZ: Asia/Tokyo
       FLASK_ENV: development
+
+  liff:
+    container_name: Alexandria-LIFF
+    build: ./liff
+    volumes:
+      - ./liff/app:/usr/src/app
+    tty: true
+    environment:
+      TZ: Asia/Tokyo
