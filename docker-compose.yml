@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  reverse-proxy:
+    container_name: Alexandria-ReverseProxy
+    build: ./reverse_proxy
+    volumes:
+      - ./reverse_proxy/html:/var/www/html
+    ports:
+      - "5000:80"
+    links:
+      - bot:bot
+    tty: true
+    environment:
+      TZ: Asia/Tokyo
+
+  bot:
+    container_name: Alexandria-Bot
+    build: ./bot
+    tty: true
+    environment:
+      TZ: Asia/Tokyo
+      FLASK_ENV: development
