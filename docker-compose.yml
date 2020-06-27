@@ -11,6 +11,7 @@ services:
     depends_on:
       - bot
       - liff
+      - api
     tty: true
     environment:
       TZ: Asia/Tokyo
@@ -18,6 +19,14 @@ services:
   bot:
     container_name: Alexandria-Bot
     build: ./bot
+    tty: true
+    environment:
+      TZ: Asia/Tokyo
+      FLASK_ENV: development
+
+  api:
+    container_name: Alexandria-Api
+    build: ./api
     tty: true
     environment:
       TZ: Asia/Tokyo
