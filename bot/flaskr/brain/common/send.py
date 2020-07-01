@@ -1,0 +1,227 @@
+import os
+import requests
+import time
+from copy import deepcopy
+from flaskr import logger
+from flaskr.errors import BookNotFound
+from flaskr.models import flexbox, db, record
+from linebot.models import FlexSendMessage
+from lxml import html
+from urllib.parse import urlencode
+
+
+def bookmeta(book_doc):
+    """
+    Create from book_doc to flexbox and return it.
+
+    Parameters
+    ----------
+    book_doc: dict
+        Book status.
+
+    Returns
+    -------
+    flex_message: dict
+        Flex message style dict.
+
+    Raises
+    ------
+    None
+
+    See also
+    --------
+    flaskr.models.record.book_doc
+    """
+
+    meta = book_doc["bookmeta"]
+    flex_bookmeta = deepcopy(flexbox.bookmeta)
+    bookmeta = deepcopy(record.bookmeta)
+
+    # variable of meta contains too much information, so bookmeta is less than it.
+    bookmeta["isbn"] = meta["isbn"]
+    bookmeta["title"] = meta["title"]
+    bookmeta["author"] = meta["author"]
+
+    # key: {size: text size, weight: text weight, prefix: prefix of bookmeta[key]}
+    order = {
+        "title": {"size": "xl", "weight": "bold"},
+        "subtitle": {"size": "lg"},
+        "author": {"prefix": "著者: "},
+        "publisher": {"prefix": "出版社: "},
+        "publishdate": {"prefix": "出版日: "},
+        "page": {"prefix": "ページ数: "}
+    }
+
+    for key in order:
+        # some meta[key] are "" (not specified)
+        if meta[key]:
+            minitext = deepcopy(flexbox.minitext)
+            minitext["text"] = order[key].get("prefix", "") + meta[key]
+            minitext["size"] = order[key].get("size", "md")
+            minitext["weight"] = order[key].get("weight", "regular")
+            flex_bookmeta["body"]["contents"].append(deepcopy(minitext))
+
+    # if None, then use an image from irasutoya
+    # flex_bookmeta["hero"]["url"] = meta["image"] if meta["image"] else "https://4.bp.blogspot.com/-2t-ECy35d50/UPzH73UAg3I/AAAAAAAAKz4/OJZ0yCVaRbU/s1600/book.png"
+    flex_bookmeta["hero"]["url"] = "https://4.bp.blogspot.com/-2t-ECy35d50/UPzH73UAg3I/AAAAAAAAKz4/OJZ0yCVaRbU/s1600/book.png"
+    flex_bookmeta["footer"]["contents"][0]["action"]["uri"] = f"https://calil.jp/book/{meta['isbn']}"
+    flex_bookmeta["footer"]["contents"][1]["action"]["data"] = f"{bookmeta}"
+
+    flex_message = FlexSendMessage(
+        alt_text="book information",
+        contents=flex_bookmeta
+    )
+
+
+    return flex_message
+
+
+def compact_bookmeta(isbn):
+    """
+    Create from isbn to flexbox and return it.
+
+    Parameters
+    ----------
+    isbn: str
+        The isbn which openbd does not much information.
+
+    Returns
+    -------
+    flex_message: dict
+        Normal flex message.
+
+    Raises
+    ------
+    BookNotFound
+        There is no information in calil website.
+    """
+
+    # scrape from calil web site, not api
+    url = f"https://calil.jp/book/{isbn}"
+    title_xpath = '//*[@id="ccontent"]/div/div[1]/div[2]/div/div[2]/h1'
+    author_xpath = '//*[@id="ccontent"]/div/div[1]/div[2]/div/div[2]/p/a'
+    rq = requests.get(url)
+    status_code = rq.status_code
+
+    if status_code == 200:
+        minitext = deepcopy(flexbox.minitext)
+        flex_bookmeta = deepcopy(flexbox.bookmeta)
+        bookmeta = deepcopy(record.bookmeta)
+
+        tree = html.fromstring(rq.content)
+        title = tree.xpath(title_xpath)[0].text.replace(
+            " ", "").replace("\n", "")
+        author = tree.xpath(author_xpath)[0].text.replace(
+            " ", "").replace("\n", "")
+
+        bookmeta["isbn"] = isbn
+        bookmeta["title"] = title
+        bookmeta["author"] = author
+
+        minitext["text"] = title
+        minitext["size"] = "xl"
+        flex_bookmeta["body"]["contents"].append(minitext)
+        flex_bookmeta["footer"]["contents"][0]["action"][
+            "uri"] = f"https://calil.jp/book/{isbn}"
+        flex_bookmeta["footer"]["contents"][1]["action"]["data"] = bookemta
+        logger.debug(flex_bookmeta)
+
+        flex_message = FlexSendMessage(
+            alt_text='book information',
+            contents=flex_bookmeta
+        )
+
+        return (bookmeta, flex_message)
+
+    else:
+        raise BookNotFound
+
+
+def bookstatus(bookstatus):
+    """
+    Create from bookstatus to flexbox and return it.
+
+    Parameters
+    ----------
+    bookstatus: list
+       List of bookstatus which is searched in different libraries.
+
+    Returns
+    -------
+    flex_message: dict
+        Carousel flex message.
+    Raises
+    ------
+    BookNotFound
+        There is no information in calil website.
+    """
+
+    flexboxes = []
+    for status in bookstatus:
+        flex_bookstatus = deepcopy(flexbox.flex_bookstatus)
+        try:
+            systemid = status["systemid"]
+            flex_bookstatus["hero"]["url"] = "https://3.bp.blogspot.com/-FJiaJ8gidCs/Ugsu-rSFw0I/AAAAAAAAXNA/JFiIUoxggW4/s800/book_tate.png"
+            """
+            if os.path.exists(f"./flaskr/static/images/library/{systemid}.jpg"):
+                flex_bookstatus["hero"]["url"] = f"/static/images/library/{systemid}.jpg"
+            else:
+                flex_bookstatus["hero"]["url"] = "https://3.bp.blogspot.com/-FJiaJ8gidCs/Ugsu-rSFw0I/AAAAAAAAXNA/JFiIUoxggW4/s800/book_tate.png"
+            """
+
+            minitext = deepcopy(flexbox.minitext)
+            systemname = db.libraries.find_one({"systemid": systemid})["systemname"]
+
+            # both reserveurl and libkey are None
+            if (status.get("reserveurl") and status.get("libkey")) is False:
+                minitext["text"] = f"{systemname}: 在書"
+                flex_bookstatus["body"]["contents"].append(minitext)
+
+            else:
+                minitext["text"] = systemname
+                minitext["size"] = "lg"
+                minitext["weight"] = "bold"
+                flex_bookstatus["body"]["contents"].append(minitext)
+
+            if status.get("libkey"):
+                text = ""
+                keylist = status["libkey"].keys()
+
+                # status depends on libraries
+                minitext = deepcopy(flexbox.minitext)
+                for libkey in keylist:
+                    foundedlib = db.libraries.find_one(
+                        {"systemid": systemid, "libkey": libkey}
+                    )
+                    short = foundedlib["short"] if foundedlib else libkey
+                    state = status["libkey"][libkey]
+                    text += f"{short}: {state}\n"
+
+                minitext["text"] = text
+                flex_bookstatus["body"]["contents"].append(minitext)
+
+            if status.get("reserveurl"):
+                button = deepcopy(flexbox.button)
+                button["action"]["uri"] = status["reserveurl"]
+                flex_bookstatus["footer"]["contents"].append(button)
+
+            logger.debug(flex_bookstatus)
+            flexboxes.append(flex_bookstatus)
+
+        except KeyError:
+            pass
+
+        except Exception as e:
+            logger.debug(e)
+
+    carousel = {
+        "type": "carousel",
+        "contents": flexboxes
+    }
+
+    flex_message = FlexSendMessage(
+        alt_text='book status information',
+        contents=carousel
+    )
+
+    return flex_message
