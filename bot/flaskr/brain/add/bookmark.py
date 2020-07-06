@@ -34,7 +34,8 @@ def add_bookmark(event=None):
     userid = event.source.user_id if event else "testid"
     hashed_userid = sha256(userid.encode()).hexdigest()
 
-    waitingbook = json.loads(event.postback.data)
+    postback_data = event.postback.data.replace("'", '"') # replace single quotation to double
+    waitingbook = json.loads(postback_data)
     if hashed_userid in db.users.find({"userid": hashed_userid}):
         raise DuplicateUserError
 
