@@ -36,13 +36,12 @@ def add_bookmark(event=None):
 
     postback_data = event.postback.data.replace("'", '"') # replace single quotation to double
     waitingbook = json.loads(postback_data)
-    if hashed_userid in db.users.find({"userid": hashed_userid}):
-        raise DuplicateUserError
 
-    if db.users.count() == 0:
+    if db.user.find(hashed_userid) is None:
         raise UserNotFound
 
-    bookmarks = db.users.find_one({"userid": hashed_userid})["bookmarks"]
+    user_doc = db.user.find(hashed_userid)
+    bookmarks = user_doc["bookmarks"]
     logger.debug(f"registared bookmarks: {bookmarks}")
 
     if waitingbook["isbn"] in list(map(lambda x: x["bookmeta"]["isbn"], bookmarks)):
@@ -56,10 +55,8 @@ def add_bookmark(event=None):
     logger.debug(f"addtional book marks: {book_doc}")
 
     bookmarks.append(book_doc)
-    db.users.update_one(
-        {"userid": hashed_userid},
-        {"$set": {"bookmarks": bookmarks}}
-    )  # update bookmarks
+    user_doc["bookmarks"] = bookmarks
+    db.user.set(hashed_userid, user_doc)  # update bookmarks
     logger.info(f"{bookmarks} is registared")
     status = "本が登録されました"
 

@@ -1,5 +1,5 @@
 from flaskr import logger, handler, line_bot_api
-from flaskr.models import db, record
+from flaskr.models import record
 from flaskr.brain import add, isbn2message
 from flaskr.errors import DuplicateUserError, DuplicateLibraryError
 from hashlib import sha256
@@ -21,7 +21,8 @@ def chat(event=None):
             return 200
 
         elif cmd[0] == "/addlib":
-            add.favolib(event, {"systemid": cmd[1]})
+            add.favolib(event, {"libid": cmd[1]})
+
             status = "Success!"
 
         elif cmd[0] == "liff":

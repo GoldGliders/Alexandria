@@ -36,39 +36,35 @@ def add_favoilib(event=None, libinfo=None):
     hashed_userid = sha256(userid.encode()).hexdigest()
     logger.debug(event)
 
+    # test code
     # libinfo  = {"formal": "会津大学附属図書館", "systemid": "Univ_Aizu"}
     if libinfo is None:
-        libinfo = {"formal": "会津大学附属図書館", "systemid": "Univ_Aizu"}
-    elif libinfo.get("formal") is None:
-        libinfo["formal"] = db.libraries.find_one(
-            {"systemid": libinfo["systemid"]})["formal"]
+        libinfo = {"formal": "会津大学附属図書館", "systemid": "Univ_Aizu", "libid": "104688"}
 
-    # confirmation the user is unique
-    if hashed_userid not in db.users.find_one({"userid": hashed_userid})["userid"]:
+    # confirmation of uniquness of the user
+    if db.user.find(hashed_userid) is None:
+        logger.info("user not found")
         raise UserNotFound
 
-    favolib = db.users.find_one({"userid": hashed_userid})["favolib"]
+    user_doc = db.user.find(hashed_userid)
+    favolib = user_doc["favolib"]
     logger.debug(f"registered favorite libraries: {favolib}")
 
-    if libinfo["formal"] in list(map(lambda x: x["formal"], favolib)):
+    if libinfo["libid"] in list(map(lambda x: x["libid"], favolib)):
         raise DuplicateLibraryError
 
-    # get info of one library from mongo db
-    libinfo = db.libraries.find_one(
-        {"systemid": libinfo["systemid"],
-         "formal": libinfo["formal"]}
-    )
+    # get info of one library from db
+    libinfo = db.library.find(libinfo["libid"])
     # make favorite library doc
     lib_doc["timestamp"] = int(time.time())
     lib_doc["formal"] = libinfo["formal"]
+    lib_doc["libid"] = libinfo["libid"]
     lib_doc["systemid"] = libinfo["systemid"]
     logger.debug(f"additional favorite library: {lib_doc}")
 
     favolib.append(lib_doc)
-    db.users.update_one(
-        {"userid": hashed_userid},
-        {"$set": {"favolib": favolib}}
-    )  # update favorite library
+    user_doc["favolib"] = favolib
+    db.user.set(hashed_userid, user_doc)  # update favorite library
     logger.info(f"{favolib} is registared")
     status = "success"
 

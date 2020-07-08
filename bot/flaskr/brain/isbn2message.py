@@ -28,7 +28,7 @@ def isbn2message(event, isbn):
 
     userid = event.source.user_id if event else "testid"
     hashed_userid = sha256(userid.encode()).hexdigest()
-    favolib = db.users.find_one({"userid": hashed_userid})["favolib"]
+    favolib = db.user.find(hashed_userid)["favolib"]
     logger.debug(favolib)
     bookstatus = []
 

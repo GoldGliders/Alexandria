@@ -26,7 +26,8 @@ def add_history(event=None, bookdoc=None):
 
     userid = event.source.user_id if event else "testid"
     hashed_userid = sha256(userid.encode()).hexdigest()
-    history = db.users.find_one({"userid": hashed_userid})["history"]
+    user_doc = db.user.find(hashed_userid)
+    history = user_doc["history"]
 
     try:
         logger.debug(f"hashed userid: {hashed_userid}, history: {history}")
@@ -34,10 +35,8 @@ def add_history(event=None, bookdoc=None):
         history.append(bookdoc)
         logger.debug(f"registaring history: {bookdoc}")
 
-        db.users.update_one(
-            {"userid": hashed_userid},
-            {"$set": {"history": history}}
-        )  # update history
+        user_doc["history"] = history
+        db.user.set(hashed_userid, user_doc)  # update history
         logger.debug(f"successed in registaring history")
 
     except Exception as e:

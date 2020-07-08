@@ -18,10 +18,10 @@ def followevent(event=None):
     status = ""
     try:
         logger.debug(user_doc)
-        if hashed_userid in db.users.find({"userid": hashed_userid}):
+        if db.user.find(hashed_userid):
             raise DuplicateUserError
 
-        db.users.insert(user_doc)
+        db.user.set(hashed_userid, user_doc)
         logger.info("Successed in registaring new follower!")
         status = "登録アザス"
 

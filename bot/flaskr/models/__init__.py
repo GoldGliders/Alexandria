@@ -1,5 +1,3 @@
-import os
-from pymongo import MongoClient
+from flaskr.models.client import firestore_client
 
-client = MongoClient(os.environ["MONGO_URI"])
-db = client.LIBRARYBOT
+db = firestore_client("instance/key.json")

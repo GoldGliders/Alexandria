@@ -1,4 +1,3 @@
-
 from flaskr import logger, handler, line_bot_api
 from flaskr.brain import add
 from flaskr.errors import DuplicateBookError, DuplicateUserError, UserNotFound

@@ -62,8 +62,7 @@ def bookmeta(book_doc):
             flex_bookmeta["body"]["contents"].append(deepcopy(minitext))
 
     # if None, then use an image from irasutoya
-    # flex_bookmeta["hero"]["url"] = meta["image"] if meta["image"] else "https://4.bp.blogspot.com/-2t-ECy35d50/UPzH73UAg3I/AAAAAAAAKz4/OJZ0yCVaRbU/s1600/book.png"
-    flex_bookmeta["hero"]["url"] = "https://4.bp.blogspot.com/-2t-ECy35d50/UPzH73UAg3I/AAAAAAAAKz4/OJZ0yCVaRbU/s1600/book.png"
+    flex_bookmeta["hero"]["url"] = meta["image"] if meta["image"] else "https://4.bp.blogspot.com/-2t-ECy35d50/UPzH73UAg3I/AAAAAAAAKz4/OJZ0yCVaRbU/s1600/book.png"
     flex_bookmeta["footer"]["contents"][0]["action"]["uri"] = f"https://calil.jp/book/{meta['isbn']}"
     flex_bookmeta["footer"]["contents"][1]["action"]["data"] = f"{bookmeta}"
 
@@ -160,7 +159,6 @@ def bookstatus(bookstatus):
     for status in bookstatus:
         flex_bookstatus = deepcopy(flexbox.flex_bookstatus)
         try:
-            systemid = status["systemid"]
             flex_bookstatus["hero"]["url"] = "https://3.bp.blogspot.com/-FJiaJ8gidCs/Ugsu-rSFw0I/AAAAAAAAXNA/JFiIUoxggW4/s800/book_tate.png"
             """
             if os.path.exists(f"./flaskr/static/images/library/{systemid}.jpg"):
@@ -169,8 +167,10 @@ def bookstatus(bookstatus):
                 flex_bookstatus["hero"]["url"] = "https://3.bp.blogspot.com/-FJiaJ8gidCs/Ugsu-rSFw0I/AAAAAAAAXNA/JFiIUoxggW4/s800/book_tate.png"
             """
 
+            library = db.library.filter("libkey", "==", list(status["libkey"])[0])
+            libid = list(library.keys())[0]
             minitext = deepcopy(flexbox.minitext)
-            systemname = db.libraries.find_one({"systemid": systemid})["systemname"]
+            systemname = library[libid]["systemname"]
 
             # both reserveurl and libkey are None
             if (status.get("reserveurl") and status.get("libkey")) is False:
@@ -190,10 +190,7 @@ def bookstatus(bookstatus):
                 # status depends on libraries
                 minitext = deepcopy(flexbox.minitext)
                 for libkey in keylist:
-                    foundedlib = db.libraries.find_one(
-                        {"systemid": systemid, "libkey": libkey}
-                    )
-                    short = foundedlib["short"] if foundedlib else libkey
+                    short = library[libid]["short"] if library else libkey
                     state = status["libkey"][libkey]
                     text += f"{short}: {state}\n"
 
