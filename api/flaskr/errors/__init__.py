@@ -1,0 +1,2 @@
+class IdTokenExpired(Exception):
+    pass
