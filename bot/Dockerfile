@@ -2,7 +2,6 @@ FROM python:3.8
 
 # copy
 COPY ./requirements.txt /tmp
-COPY "./" "/app/"
 
 # make file and directories
 RUN mkdir "/var/log/flask/"
