@@ -1,6 +1,6 @@
 server{
     listen 80;
-    server_name liff.${HOSTNAME};
+    server_name liff.${NGINX_HOSTNAME};
     charset UTF-8;
 
     location / {
@@ -10,7 +10,7 @@ server{
 
 server{
     listen 80;
-    server_name bot.${HOSTNAME};
+    server_name bot.${NGINX_HOSTNAME};
     charset UTF-8;
 
     location / {
@@ -20,7 +20,7 @@ server{
 
 server{
     listen 80;
-    server_name api.${HOSTNAME};
+    server_name api.${NGINX_HOSTNAME};
     charset UTF-8;
 
     location / {
@@ -30,7 +30,7 @@ server{
 
 server{
     listen 80;
-    server_name ${HOSTNAME};
+    server_name ${NGINX_HOSTNAME};
     charset UTF-8;
 
 
