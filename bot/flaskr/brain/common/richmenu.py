@@ -37,7 +37,7 @@ def create_richmenu():
         areas=[
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*0, y=H*0, width=W, height=H),
-                action=MessageAction(text="bookmark")
+                action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6/bookmark/", label="bookmark")
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*1, y=H*0, width=W, height=H),
@@ -45,7 +45,7 @@ def create_richmenu():
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*2, y=H*0, width=W, height=H),
-                action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6", label="history")
+                action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6/history/", label="history")
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*0, y=H*1, width=W, height=H),
@@ -53,8 +53,7 @@ def create_richmenu():
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*1, y=H*1, width=W, height=H),
-                #action=MessageAction(text="help")
-                action=MessageAction(text="liff")
+                action=MessageAction(text="help")
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*2, y=H*1, width=W, height=H),
