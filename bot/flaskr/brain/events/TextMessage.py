@@ -28,6 +28,12 @@ def chat(event=None):
         elif cmd[0] == "liff":
             status = "https://liff.line.me/1654371886-xorapzM6"
 
+        elif cmd[0] == "history":
+            status = "https://liff.line.me/1654371886-xorapzM6/history"
+
+        elif cmd[0] == "bookmark":
+            status = "https://liff.line.me/1654371886-xorapzM6/bookmark"
+
         elif cmd[0].replace("-", "").isdigit():
             isbn2message(event, cmd[0].replace("-", ""))
             event = None
