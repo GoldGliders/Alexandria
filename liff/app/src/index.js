@@ -3,11 +3,16 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import BookTable from './components/booktable';
+import { BrowserRouter, Route, Link } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 
+const liffId = "1654371886-xorapzM6"
 ReactDOM.render(
   <React.StrictMode>
-     <BookTable uri={"history"} columnNames={["title", "author", "isbn"] } liffId={"1654371886-xorapzM6"}/>
+    <BrowserRouter>
+      <Route exact path="/liff/history" render={() => <BookTable uri={"history"} columnNames={["title", "author", "isbn"] } liffId={liffId}/> }/>
+      <Route exact path="/liff/bookmark" render={() => <BookTable uri={"bookmark"} columnNames={["title", "author", "isbn"] } liffId={liffId}/> }/>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
