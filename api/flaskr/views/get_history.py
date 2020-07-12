@@ -4,9 +4,7 @@ from flaskr import bp, get_profile, logger
 from flaskr.models import db
 from hashlib import sha256
 
-
-@bp.route("/history", methods=["GET"])
-def get_history():
+def get_resource(resource_name):
     id_token = request.args.get("idToken") or os.getenv("DEFAULT_HASHED_USERId")
     try:
         response = get_profile(id_token)
@@ -16,7 +14,7 @@ def get_history():
         logger.debug(hashed_useid)
         document = db.user.find(hashed_useid)
         logger.debug(document)
-        history = document["history"]
+        history = document[resource_name]
         items = {"items": history}
         logger.debug(items)
 
@@ -26,6 +24,18 @@ def get_history():
         logger.info(f"id_token error: {e}")
 
         return jsonify({"error": str(e)}), 400
+
+
+@bp.route("/history", methods=["GET"])
+def get_history():
+    resource = get_resource("history")
+    return resource
+
+
+@bp.route("/bookmark", methods=["GET"])
+def get_bookmark():
+    resource = get_resource("bookmarks")
+    return resource
 
 
 @bp.route("/history", methods=["POST"])

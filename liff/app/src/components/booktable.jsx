@@ -1,5 +1,6 @@
 import React from "react"
 import { initializeLiff } from "./liffInit"
+import liff from "@line/liff"
 
 class BookTable extends React.Component{
   constructor(props){
@@ -19,7 +20,7 @@ class BookTable extends React.Component{
   }
 
   componentDidMount(){
-    const idToken = initializeLiff(this.state.liffId, this.getResource)
+    initializeLiff(this.state.liffId, this.getResource)
   }
 
   getResource(resp){
@@ -78,22 +79,29 @@ class BookTable extends React.Component{
 
 
   render(){
-    console.log(this.state)
-    return(
-      <div>
-        <table>
-          <thead>
-            <tr>
-              <th>timestamp</th>
-              {this.state.columnNames.map((key, colNum) => <th key={colNum}>{key}</th>)}
-            </tr>
-          </thead>
-          <tbody>
-            {this.row()}
-          </tbody>
-        </table>
-      </div>
-    )
+    if (this.state.error){
+      return(
+        <div>
+          <h1>api server error</h1>
+        </div>
+      )
+    }else{
+      return(
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>timestamp</th>
+                {this.state.columnNames.map((key, colNum) => <th key={colNum}>{key}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {this.row()}
+            </tbody>
+          </table>
+        </div>
+      )
+    }
   }
 }
 
