@@ -3,12 +3,11 @@ from flask import request, jsonify
 from flaskr import bp, get_profile, logger
 from flaskr.models import db
 from hashlib import sha256
-from pymongo.errors import ServerSelectionTimeoutError
 
 
 @bp.route("/history", methods=["GET"])
 def get_history():
-    id_token = request.args.get("id_token") or os.getenv("DEFAULT_HASHED_USERId")
+    id_token = request.args.get("idToken") or os.getenv("DEFAULT_HASHED_USERId")
     try:
         response = get_profile(id_token)
         userid = response["sub"]
@@ -27,12 +26,6 @@ def get_history():
         logger.info(f"id_token error: {e}")
 
         return jsonify({"error": str(e)}), 400
-
-    except ServerSelectionTimeoutError as e:
-        logger.info(f"server error: {e}")
-
-        return jsonify({"error": str(e)}), 500
-
 
 
 @bp.route("/history", methods=["POST"])
