@@ -5,6 +5,20 @@ from flaskr.errors import DuplicateUserError, DuplicateLibraryError
 from hashlib import sha256
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
+HELP = \
+"""
+COMMANDS:
+/f <key> <value>
+You can find libid which matches the key with the value
+/addlib <libid>
+You can add a library specified by libid
+
+USAGE:
+At first, you should register your favorite library with avobe commands.
+Next, send an isbn of a book by photo or text.
+You can get information of the book and status of it at the library you specified.
+"""
+
 
 @handler.add(MessageEvent, message=TextMessage)
 def chat(event=None):
@@ -30,6 +44,9 @@ def chat(event=None):
                 status = "\n".join(list(map(lambda x: f"{resp[x]['systemname']} {resp[x]['short']}\n{resp[x]['libid']}\n", resp)))
             else:
                 status = "fail"
+
+        elif cmd[0] == "help":
+            status = HELP
 
         elif cmd[0] == "liff":
             status = "https://liff.line.me/1654371886-xorapzM6"
