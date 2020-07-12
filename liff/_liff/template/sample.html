@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello LIFF</title>
+  </head>
+  <body>
+    <p id="liffAppContent"></p>
+    <table>
+      <tr>
+        <th>header</th>
+        <th>data</th>
+      </tr>
+      <tr>
+        <td>browserLanguage</td>
+        <td id="browserLanguage"></td>
+      </tr>
+      <tr>
+        <td>sdkVersion</td>
+        <td id="sdkVersion">-</td>
+      </tr>
+      <tr>
+        <td>isInClient</td>
+        <td id="isInClient">-</td>
+      </tr>
+      <tr>
+        <td>isLoggedIn</td>
+        <td id="isLoggedIn"></td>
+      </tr>
+      <tr>
+        <td>deviceOS</td>
+        <td id="deviceOS"></td>
+      </tr>
+      <tr>
+        <td>lineVersion</td>
+        <td id="lineVersion"></td>
+      </tr>
+    </table>
+  </body>
+  <button id="closeWindowButton">close</button>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="static/js/liff.js"></script>
+</html>
