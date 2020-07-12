@@ -13,7 +13,7 @@ def unfollowevent(event=None):
 
     status = ""
     try:
-        if db.user.find(hashed_userid):
+        if db.user.find(hashed_userid) is None:
             raise UserNotFound
 
         db.user.remove(hashed_userid)
