@@ -21,6 +21,7 @@ class BookTable extends React.Component{
 
   componentDidMount(){
     initializeLiff(this.state.liffId, this.getResource)
+    //this.getResource({"idToken": liff.getIDToken(), "os": liff.getOS(), "status": "ok"})
   }
 
   getResource(resp){
