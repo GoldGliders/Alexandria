@@ -38,6 +38,12 @@ def get_bookmark():
     return resource
 
 
+@bp.route("/library", methods=["GET"])
+def get_library():
+    resource = get_resource("library")
+    return resource
+
+
 @bp.route("/history", methods=["POST"])
 def remove_history():
     return "api bp"
