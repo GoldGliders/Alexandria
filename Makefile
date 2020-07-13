@@ -1,3 +1,5 @@
+arg = bot
+
 up:
 	docker-compose up -d
 build:
@@ -5,18 +7,18 @@ build:
 stop:
 	docker-compose stop
 restart:
-	docker-compose restart
-proxy:
-	docker-compose exec reverse-proxy bash
+	docker-compose restart ${arg}
+ps:
+	docker-compose ps
+bash:
+	docker-compose exec ${arg} bash
 proxy-alog:
 	docker-compose exec reverse-proxy tail -f /var/log/nginx/access.log
 proxy-elog:
 	docker-compose exec reverse-proxy tail -f /var/log/nginx/error.log
-bot-:
-	docker-compose exec bot bash
 bot-log:
 	docker-compose exec bot tail -f /var/log/flask/access.log
-api-:
-	docker-compose exec api bash
 api-log:
-	docker-compose exec api tail -f /var/log/flask/access.log
+	docker-compose logs -f --tail=30 api
+liff-log:
+	docker-compose logs -f --tail=30 liff
