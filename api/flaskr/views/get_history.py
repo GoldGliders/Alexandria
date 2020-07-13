@@ -40,7 +40,7 @@ def get_bookmark():
 
 @bp.route("/library", methods=["GET"])
 def get_library():
-    resource = get_resource("library")
+    resource = get_resource("favolib")
     return resource
 
 
