@@ -27,6 +27,11 @@ class firestore_client(object):
 
         return self
 
+    @property
+    def pref(self):
+        self.collection_name = "pref"
+
+        return self
 
     def find(self, name):
         self.document = self.db.collection(self.collection_name).document(name).get().to_dict()
@@ -34,8 +39,13 @@ class firestore_client(object):
         return self.document
 
 
-    def filter(self, key, operator, value):
-        documents = self.db.collection(self.collection_name).where(key, operator, value).stream()
+    def filter(self, filters):
+        # skin = [(key ,operator, value), (key, operator, value), ...]
+        documents = self.db.collection(self.collection_name)
+        for skin in filters:
+            documents = documents.where(*skin)
+
+        documents = documents.stream()
         self.documents = {}
         for doc in documents:
             self.documents[doc.id] = doc.to_dict()
