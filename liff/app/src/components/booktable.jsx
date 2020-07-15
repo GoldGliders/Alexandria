@@ -1,5 +1,6 @@
 import React from "react"
 import { initializeLiff } from "./liffInit"
+import MultiButton from "./multibutton"
 import liff from "@line/liff"
 
 class BookTable extends React.Component{
@@ -60,6 +61,20 @@ class BookTable extends React.Component{
   }
 
 
+  multiButton(uri, isbn, title, os){
+    switch(uri){
+      case "history":
+        if (os === "web"){
+          return null
+        }else{
+          return <MultiButton funcName={uri} text="search" isbn={isbn}/>
+        }
+
+      case "bookmark":
+        return  <MultiButton funcName={uri} text="remove" isbn={isbn} title={title} idToken={liff.getIDToken()}/>
+    }
+  }
+
   row(){
     const rows = this.state.bookmetas.map((bookmeta, rowNum) => (
       <tr key={rowNum}>
@@ -71,6 +86,9 @@ class BookTable extends React.Component{
             {cell}
           </td>
         ))}
+        <td key={bookmeta.length+1}>
+          {this.multiButton(this.state.uri, bookmeta[this.state.columnNames.indexOf("isbn")], bookmeta[this.state.columnNames.indexOf("title")], this.state.os)}
+        </td>
       </tr>
     ))
 
