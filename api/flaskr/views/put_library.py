@@ -16,12 +16,12 @@ def create_resource(resource, id_token=None):
         logger.debug(hashed_useid)
         db.user.set(hashed_useid, resource)
 
-        return {"status": "success"}, 200
+        return {"status": 200}, 200
 
     except Exception as e:
         logger.info(f"undefined error: {e}")
 
-        return {"error": str(e)}, 500
+        return {"status": 500, "message": str(e)}, 500
 
 
 @bp.route("/library", methods=["PUT"])
@@ -41,7 +41,7 @@ def put_library():
 
         if libid in registered_libid:
             # 406: not acceptable
-            return jsonify({"error": "This library is already registered."}, 406)
+            return jsonify({"status": 406, "message": "This library is already registered."}), 406
         else:
             libinfo = db.library.find(libid)
 
@@ -58,4 +58,4 @@ def put_library():
             return jsonify(resource), status_code
 
     else:
-        return jsonify({"error": "api server error"}), 500
+        return jsonify({"status": 500, "message": "api server error"}), 500

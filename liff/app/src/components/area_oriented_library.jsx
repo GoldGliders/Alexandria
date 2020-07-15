@@ -13,7 +13,7 @@ class LibrarySelect extends React.Component{
       selectedPref: null,
       selectedCity: null,
       selectedLibrary: null,
-      libraryColumns: ["systemname", "libkey", "libid"],
+      libraryColumns: ["formal"],
       url: "/api/onelibrary",
       level: 0,
       error: false,
@@ -24,6 +24,7 @@ class LibrarySelect extends React.Component{
     this.scopeButton = this.scopeButton.bind(this)
     this.libraryTable = this.libraryTable.bind(this)
     this.scopeTable = this.scopeTable.bind(this)
+    this.registerTable = this.registerTable.bind(this)
   }
 
   componentDidMount(){
@@ -45,10 +46,6 @@ class LibrarySelect extends React.Component{
       case 3:
         fieldName = "&city"
         break
-
-      case 4:
-        fieldName = "&library"
-        break
     }
 
     url = url + `${fieldName}=${fieldValue}`
@@ -69,10 +66,6 @@ class LibrarySelect extends React.Component{
           case 3:
             response = {selectedCity: fieldValue}
             break
-
-          case 4:
-            response = {selectedLibrary: fieldValue}
-            break
         }
 
         this.setState(
@@ -88,7 +81,7 @@ class LibrarySelect extends React.Component{
       })
   }
 
-  putLibrary(libid, idToken){
+  putLibrary(libid, idToken, formal, level){
     console.log(libid, idToken)
     fetch("/api/library", {
       method: "PUT",
@@ -102,15 +95,24 @@ class LibrarySelect extends React.Component{
     })
       .then(res => res.json())
       .then((res) => {
-        console.log(res)
-        this.setState({selectedLibrary: libid})
+        if (res.status == 200){
+          this.setState({
+            selectedField: formal,
+            selectedLibrary: libid,
+            level: level + 1
+          })
+        }else{
+          this.setState({
+            error: true,
+            error_msg: res.message
+          })
+        }
       })
       .catch((err) => {
         this.setState({
           error: true,
           error_msg: err.message
         })
-        liff.logout()
       })
   }
 
@@ -145,9 +147,9 @@ class LibrarySelect extends React.Component{
               {this.state.libraryColumns.map((col, colnum) => (<td key={colnum}>{fieldValue[col]}</td>))}
               <td>
                 <button onClick={() => {
-                  this.putLibrary(fieldValue["libid"], liff.getIDToken())
+                  this.putLibrary(fieldValue["libid"], liff.getIDToken(), fieldValue["formal"], this.state.level)
                 }}>
-                  select
+                  register
                 </button>
               </td>
             </tr>
@@ -172,6 +174,16 @@ class LibrarySelect extends React.Component{
     </div>)
   }
 
+  registerTable = (library) => {
+    return (
+      <div>
+        <h1>Succeed in registering {library}</h1>
+        <button>close</button>
+        <button>back</button>
+      </div>
+    )
+  }
+
   render(){
     if (this.state.error){
       return(
@@ -181,6 +193,8 @@ class LibrarySelect extends React.Component{
       )
     }else if (this.state.level == 3){
       return this.libraryTable()
+    }else if (this.state.level == 4){
+      return this.registerTable(this.state.selectedField)
     }else{
       return this.scopeTable()
     }
