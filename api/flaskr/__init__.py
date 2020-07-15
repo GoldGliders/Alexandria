@@ -40,7 +40,7 @@ def get_resource(resource_name, id_token=None):
         logger.debug(hashed_useid)
         document = db.user.find(hashed_useid)
         logger.debug(document)
-        items = document if resource_name == "ALL" else {"item": document[resource_name]}
+        items = document if resource_name == "ALL" else {"items": document[resource_name]}
         logger.debug(items)
 
         return (items, 200)
