@@ -57,7 +57,7 @@ def create_richmenu():
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*2, y=H*1, width=W, height=H),
-                action=MessageAction(text="liff")
+                action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6/onelibrary", label="onelibrary")
             )
         ]
     )
