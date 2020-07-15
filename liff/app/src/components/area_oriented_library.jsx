@@ -20,6 +20,7 @@ class LibrarySelect extends React.Component{
       error_msg: null
     }
     this.getScope = this.getScope.bind(this)
+    this.putLibrary = this.putLibrary.bind(this)
     this.scopeButton = this.scopeButton.bind(this)
     this.libraryTable = this.libraryTable.bind(this)
     this.scopeTable = this.scopeTable.bind(this)
@@ -82,8 +83,34 @@ class LibrarySelect extends React.Component{
         )
       })
       .catch((err) => {
-        //liff.logout()
+        liff.logout()
         this.setState({error: true, error_msg: err.message})
+      })
+  }
+
+  putLibrary(libid, idToken){
+    console.log(libid, idToken)
+    fetch("/api/library", {
+      method: "PUT",
+      body: JSON.stringify({
+        libid: libid,
+        idToken: idToken
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    })
+      .then(res => res.json())
+      .then((res) => {
+        console.log(res)
+        this.setState({selectedLibrary: libid})
+      })
+      .catch((err) => {
+        this.setState({
+          error: true,
+          error_msg: err.message
+        })
+        liff.logout()
       })
   }
 
@@ -115,10 +142,11 @@ class LibrarySelect extends React.Component{
         <tbody>
           {this.state.scopeField.map((fieldValue, rownum) => (
             <tr key={rownum}>
-              {console.log(fieldValue)}
               {this.state.libraryColumns.map((col, colnum) => (<td key={colnum}>{fieldValue[col]}</td>))}
               <td>
-                <button onClick={() => this.getScope(fieldValue, this.state.url, this.state.level)}>
+                <button onClick={() => {
+                  this.putLibrary(fieldValue["libid"], liff.getIDToken())
+                }}>
                   select
                 </button>
               </td>

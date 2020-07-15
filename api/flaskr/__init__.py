@@ -1,20 +1,18 @@
 import os
+from hashlib import sha256
+import logging
 import requests
-from logging import getLogger, FileHandler, Formatter, INFO, DEBUG
-from flask import Blueprint, Flask, render_template, request
+from flask import Blueprint, Flask
 from dotenv import load_dotenv
+from flaskr.models import db
 
 load_dotenv()
 bp = Blueprint("api", __name__, static_folder="static", template_folder="template")
 
+formatter = "%(asctime)s  %(levelname)s  %(name)s  %(funcName)s  %(lineno)d : %(message)s"
+logging.basicConfig(level=logging.DEBUG, format=formatter)
+logger = logging.getLogger(__name__)
 
-LOGFILE = "/var/log/flask/access.log"
-handler = FileHandler(filename=LOGFILE, encoding="utf-8")
-handler.setFormatter(Formatter("%(asctime)s  %(levelname)s  %(name)s  %(funcName)s  %(lineno)d : %(message)s"))
-handler.setLevel(INFO)
-
-logger = getLogger(__name__)
-logger.addHandler(handler)
 
 def get_profile(id_token):
     data = {
@@ -31,15 +29,39 @@ def get_profile(id_token):
 
     return response.json()
 
+
+def get_resource(resource_name, id_token=None):
+    id_token = id_token or os.getenv("DEFAULT_HASHED_USERId")
+    try:
+        response = get_profile(id_token)
+        userid = response["sub"]
+
+        hashed_useid = sha256(userid.encode()).hexdigest()
+        logger.debug(hashed_useid)
+        document = db.user.find(hashed_useid)
+        logger.debug(document)
+        items = document if resource_name == "ALL" else {"item": document[resource_name]}
+        logger.debug(items)
+
+        return (items, 200)
+
+    except ValueError as e:
+        logger.info(f"id_token error: {e}")
+
+        return ({"error": str(e)}, 400)
+
+
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
 
     from flaskr.views import (
-        index, get_history, get_area_oriented_library
+        index, get_history, get_area_oriented_library,
+        put_library,
     )
     app.register_blueprint(index.bp)
     app.register_blueprint(get_history.bp)
     app.register_blueprint(get_area_oriented_library.bp)
+    app.register_blueprint(put_library.bp)
 
     app.config["JSON_AS_ASCII"] = False
 
