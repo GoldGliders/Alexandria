@@ -76,7 +76,6 @@ class LibrarySelect extends React.Component{
         )
       })
       .catch((err) => {
-        liff.logout()
         this.setState({error: true, error_msg: err.message})
       })
   }
@@ -178,14 +177,14 @@ class LibrarySelect extends React.Component{
     return (
       <div>
         <h1>Succeed in registering {library}</h1>
-        <button>close</button>
-        <button>back</button>
+        <button onClick={() => {liff.closeWindow()}}>close</button>
       </div>
     )
   }
 
   render(){
     if (this.state.error){
+      liff.logout()
       return(
         <div>
           <h1>{this.state.error_msg}</h1>
