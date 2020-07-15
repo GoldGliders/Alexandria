@@ -56,12 +56,13 @@ def create_app():
 
     from flaskr.views import (
         index, get_history, get_area_oriented_library,
-        put_library,
+        put_library, delete_resource
     )
     app.register_blueprint(index.bp)
     app.register_blueprint(get_history.bp)
     app.register_blueprint(get_area_oriented_library.bp)
     app.register_blueprint(put_library.bp)
+    app.register_blueprint(delete_resource.bp)
 
     app.config["JSON_AS_ASCII"] = False
 

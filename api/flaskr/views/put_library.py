@@ -32,7 +32,7 @@ def put_library():
     body = request.get_json()
     id_token = body.get("idToken")
     libid = body.get("libid")
-    logger.debug(body)
+    logger.info(body)
     document, status_code = get_resource(resource_name="ALL", id_token=id_token)
 
     if status_code == 200:

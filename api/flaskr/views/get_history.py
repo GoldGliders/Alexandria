@@ -15,7 +15,7 @@ def get_history():
 @bp.route("/bookmark", methods=["GET"])
 def get_bookmark():
     idToken = request.args.get("idToken")
-    resource, status_code = get_resource("bookmarks", idToken)
+    resource, status_code = get_resource("bookmark", idToken)
     return jsonify(resource), status_code
 
 
