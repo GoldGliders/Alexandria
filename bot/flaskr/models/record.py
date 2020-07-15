@@ -1,6 +1,6 @@
 user = {
     "userid":       "",  #str
-    "bookmarks":    [],
+    "bookmark":     [],
     "favolib":      [],
     "options":      {},
     "history":      [],

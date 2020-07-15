@@ -41,10 +41,10 @@ def add_bookmark(event=None):
         raise UserNotFound
 
     user_doc = db.user.find(hashed_userid)
-    bookmarks = user_doc["bookmarks"]
-    logger.debug(f"registared bookmarks: {bookmarks}")
+    bookmark = user_doc["bookmark"]
+    logger.debug(f"registared bookmarks: {bookmark}")
 
-    if waitingbook["isbn"] in list(map(lambda x: x["bookmeta"]["isbn"], bookmarks)):
+    if waitingbook["isbn"] in list(map(lambda x: x["bookmeta"]["isbn"], bookmark)):
         raise DuplicateBookError
 
     bookmeta["title"] = waitingbook["title"]
@@ -54,10 +54,10 @@ def add_bookmark(event=None):
     book_doc["bookmeta"] = bookmeta
     logger.debug(f"addtional book marks: {book_doc}")
 
-    bookmarks.append(book_doc)
-    user_doc["bookmarks"] = bookmarks
+    bookmark.append(book_doc)
+    user_doc["bookmark"] = bookmark
     db.user.set(hashed_userid, user_doc)  # update bookmarks
-    logger.info(f"{bookmarks} is registared")
+    logger.info(f"{bookmark} is registared")
     status = "本が登録されました"
 
     return status
