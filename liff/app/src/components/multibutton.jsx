@@ -47,15 +47,15 @@ class MultiButton extends React.Component{
         }
       })
         .then(res => res.json())
-        .then(res => {
-          if (res.status == 204){
+        .then((res) => {
+          if (res.status === 204){
             location.reload()
           }else{
             alert(`FAIL ${res.message}`)
           }
         })
-        .catch(err => {
-            alert(`FAIL ${res.message}`)
+        .catch((err) => {
+            alert(`FAIL ${err.message}`)
         })
     }
   }

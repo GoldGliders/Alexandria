@@ -1,5 +1,6 @@
 import React from "react"
 import { initializeLiff } from "./liffInit"
+import MultiButton from "./multibutton"
 import liff from "@line/liff"
 
 class LibraryTable extends React.Component{
@@ -28,10 +29,8 @@ class LibraryTable extends React.Component{
       fetch(`/api/${this.state.uri}?idToken=${resp["idToken"]}`)
         .then(res => res.json())
         .then((res) => {
-          console.log(res)
           //const timestamps = res["items"].map(x => new Date(x["timestamp"]*1000).toLocaleDateString())
           const rows = res["items"].map(item => this.state.columnNames.map(key => item[key]))
-          console.log(rows)
 
           this.setState({
             timestamps: null,
@@ -39,7 +38,6 @@ class LibraryTable extends React.Component{
             os: resp["os"],
             error: false
           })
-          console.log(this.state)
         })
         .catch((err) => {
           this.setState({
@@ -70,6 +68,9 @@ class LibraryTable extends React.Component{
             {cell}
           </td>
         ))}
+        <td key={library.length}>
+          <MultiButton funcName="library" text="remove" formal={library[this.state.columnNames.indexOf("formal")]} libid={library[this.state.columnNames.indexOf("libid")]} idToken={liff.getIDToken()} />
+        </td>
       </tr>
     ))
 
