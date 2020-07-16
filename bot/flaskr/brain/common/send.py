@@ -317,14 +317,20 @@ def bookstatus(bookstatus):
         except Exception as e:
             logger.info(e)
 
-    carousel = {
-        "type": "carousel",
-        "contents": flexboxes
-    }
+    if len(flexboxes) == 1:
+        flex_message = FlexSendMessage(
+            alt_text='book status information',
+            contents=flexboxes[0]
+        )
+    else:
+        carousel = {
+            "type": "carousel",
+            "contents": flexboxes
+        }
 
-    flex_message = FlexSendMessage(
-        alt_text='book status information',
-        contents=carousel
-    )
+        flex_message = FlexSendMessage(
+            alt_text='book status information',
+            contents=carousel
+        )
 
     return flex_message
