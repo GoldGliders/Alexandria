@@ -17,6 +17,7 @@ class LibraryTable extends React.Component{
       error_msg: null
     }
     this.getResource = this.getResource.bind(this)
+    this.convertTimestamp = this.convertTimestamp.bind(this)
     this.row = this.row.bind(this)
   }
 
@@ -29,7 +30,6 @@ class LibraryTable extends React.Component{
       fetch(`/api/${this.state.uri}?idToken=${resp["idToken"]}`)
         .then(res => res.json())
         .then((res) => {
-          //const timestamps = res["items"].map(x => new Date(x["timestamp"]*1000).toLocaleDateString())
           const rows = res["items"].map(item => this.state.columnNames.map(key => item[key]))
 
           this.setState({
@@ -60,12 +60,21 @@ class LibraryTable extends React.Component{
   }
 
 
+  convertTimestamp(colNum, cell){
+    if (this.state.columnNames.indexOf("timestamp") === colNum){
+      const converted = new Date(cell*1000).toLocaleDateString()
+      return converted
+    }else{
+      return cell
+    }
+  }
+
   row(){
     const rows = this.state.libraries.map((library, rowNum) => (
       <tr key={rowNum}>
         {library.map((cell, colNum) => (
           <td key={colNum}>
-            {cell}
+            {this.convertTimestamp(colNum, cell)}
           </td>
         ))}
         <td key={library.length}>
@@ -76,8 +85,6 @@ class LibraryTable extends React.Component{
 
     return rows
   }
-
-
 
   render(){
     if (this.state.error){
