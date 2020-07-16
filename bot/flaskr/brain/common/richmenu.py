@@ -49,7 +49,7 @@ def create_richmenu():
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*0, y=H*1, width=W, height=H),
-                action=MessageAction(text="option")
+                action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6/option", label="option")
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*1, y=H*1, width=W, height=H),

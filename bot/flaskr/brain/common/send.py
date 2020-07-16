@@ -64,6 +64,10 @@ def add_links(hashed_userid, title, isbn):
             link = links_names[key]["link"]
             chunk_list.append([name, link])
 
+    # swap
+    num = list(map(lambda x: x[0], chunk_list)).index("詳細")
+    chunk_list[num], chunk_list[-1] = chunk_list[-1], chunk_list[num]
+
     return chunk_list
 
 def bookmeta(book_doc, hashed_userid):
