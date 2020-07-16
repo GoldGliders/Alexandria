@@ -58,25 +58,7 @@ bookmeta = {
     "footer": {
         "type": "box",
         "layout": "vertical",
-        "contents": [
-            {
-                "type": "button",
-                "style": "link",
-                "action": {
-                    "type": "uri",
-                    "label": "詳細",
-                    "uri": "https://calil.jp/"
-                }
-            },{
-                "type": "button",
-                "style": "link",
-                "action": {
-                    "type": "postback",
-                    "label": "ブックマークに登録する",
-                    "data": ""
-                },
-            }
-        ]
+        "contents": []
     },
     "size": "kilo",
 }

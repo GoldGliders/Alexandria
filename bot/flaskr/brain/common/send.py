@@ -7,10 +7,66 @@ from flaskr.errors import BookNotFound
 from flaskr.models import flexbox, db, record
 from linebot.models import FlexSendMessage
 from lxml import html
-from urllib.parse import urlencode
+from urllib.parse import urlencode, quote
 
 
-def bookmeta(book_doc):
+def add_links(hashed_userid, title, isbn):
+    title = quote(title)
+    user_doc = db.user.find(hashed_userid)
+    options = user_doc["options"]
+    links_names = {
+        "calil": {
+            "link": f"https://calil.jp/book/{isbn}",
+            "displayName": "詳細"
+        },
+        "google": {
+            "link": f"https://www.google.com/search?q={isbn}",
+            "displayName": "Google"
+        },
+        "honto": {
+            "link": f"https://honto.jp/netstore/search_10{title}.html",
+            "displayName": "honto"
+        },
+        "amazon": {
+            "link": f"https://amazon.co.jp/s?k={title}",
+            "displayName": "Amazon"
+        },
+        "rakuten": {
+            "link": f"https://search.rakuten.co.jp/search/mall/{title}/",
+            "displayName": "楽天"
+        },
+        "yodobashi": {
+            "link": f"https://www.yodobashi.com/category/81001/?word={isbn}",
+            "displayName": "ヨドバシドットコム"
+        },
+        "yahoo": {
+            "link": f"https://shopping.yahoo.co.jp/search?&p={title}",
+            "displayName": "ヤフーショッピング"
+        },
+        "mercari": {
+            "link": f"https://www.mercari.com/jp/search/?keyword={title}&category_root=5",
+            "displayName": "メルカリ"
+        },
+        "rakuma": {
+            "link": f"https://fril.jp/s?query={title}&category_id=733",
+            "displayName": "ラクマ"
+        },
+        "paypayfleamarket": {
+            "link": f"https://paypayfleamarket.yahoo.co.jp/search/{title}?categoryIds=10002",
+            "displayName": "PayPayフリマ"
+        },
+    }
+
+    chunk_list = list()
+    for key, enable in options.items():
+        if enable:
+            name = links_names[key]["displayName"]
+            link = links_names[key]["link"]
+            chunk_list.append([name, link])
+
+    return chunk_list
+
+def bookmeta(book_doc, hashed_userid):
     """
     Create from book_doc to flexbox and return it.
 
@@ -63,8 +119,34 @@ def bookmeta(book_doc):
 
     # if None, then use an image from irasutoya
     flex_bookmeta["hero"]["url"] = meta["image"] if meta["image"] else "https://4.bp.blogspot.com/-2t-ECy35d50/UPzH73UAg3I/AAAAAAAAKz4/OJZ0yCVaRbU/s1600/book.png"
-    flex_bookmeta["footer"]["contents"][0]["action"]["uri"] = f"https://calil.jp/book/{meta['isbn']}"
-    flex_bookmeta["footer"]["contents"][1]["action"]["data"] = f"{bookmeta}"
+
+    buttons = list()
+    options = add_links(hashed_userid, meta["title"], meta["isbn"])
+    for name, link in options:
+        logger.debug(link)
+        button = {
+            "type": "button",
+            "style": "link",
+            "action": {
+                "type": "uri",
+                "label": name,
+                "uri": link
+            }
+        }
+        buttons.append(button)
+
+    button = {
+        "type": "button",
+        "style": "link",
+        "action": {
+            "type": "postback",
+            "label": "ブックマークに登録する",
+            "data": f"{bookmeta}"
+        },
+    }
+
+    buttons.append(button)
+    flex_bookmeta["footer"]["contents"] = buttons
 
     flex_message = FlexSendMessage(
         alt_text="book information",
@@ -120,9 +202,29 @@ def compact_bookmeta(isbn):
         minitext["text"] = title
         minitext["size"] = "xl"
         flex_bookmeta["body"]["contents"].append(minitext)
-        flex_bookmeta["footer"]["contents"][0]["action"][
-            "uri"] = f"https://calil.jp/book/{isbn}"
-        flex_bookmeta["footer"]["contents"][1]["action"]["data"] = bookemta
+
+        content = list()
+        content.append({
+            "type": "button",
+            "style": "link",
+            "action": {
+                "type": "uri",
+                "label": "詳細",
+                "uri": "https://calil.jp/book/{isbn}"
+            }
+        })
+
+        content.append({
+            "type": "button",
+            "style": "link",
+            "action": {
+                "type": "postback",
+                "label": "ブックマークに登録する",
+                "data": bookmeta
+            },
+        })
+
+        flex_bookmeta["footer"]["contents"] = content
         logger.debug(flex_bookmeta)
 
         flex_message = FlexSendMessage(
@@ -209,7 +311,7 @@ def bookstatus(bookstatus):
             pass
 
         except Exception as e:
-            logger.debug(e)
+            logger.info(e)
 
     carousel = {
         "type": "carousel",

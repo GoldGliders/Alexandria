@@ -35,7 +35,7 @@ def isbn2message(event, isbn):
     try:
         bookdoc = call_api.openbd(isbn)
         if bookdoc:
-            flex_message = send.bookmeta(bookdoc)
+            flex_message = send.bookmeta(bookdoc, hashed_userid)
             add.history(event, bookdoc)
 
         else:

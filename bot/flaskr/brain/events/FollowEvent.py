@@ -13,7 +13,18 @@ def followevent(event=None):
 
     user_doc["userid"] = hashed_userid
     user_doc["context"] = ""
-    user_doc["options"] = {"Amazon": False, "Rakuten": False, "Yahoo": False, "Mercali": False}
+    user_doc["options"] = {
+        "calil": True,
+        "google": False,
+        "honto": False,
+        "amazon": True,
+        "rakuten": False,
+        "yodobashi": False,
+        "yahoo": False,
+        "mercari": True,
+        "rakuma": False,
+        "paypayfleamarket": False
+    }
 
     status = ""
     try:
