@@ -24,6 +24,32 @@ def create_resource(resource, id_token=None):
         return {"status": 500, "message": str(e)}, 500
 
 
+@bp.route("/option", methods=["PUT"])
+def put_options():
+    """
+    Create favorite library on record. It must be unique on one user record.
+    """
+    body = request.get_json()
+    id_token = body.get("idToken")
+    options = body.get("items")
+    logger.info(body)
+    document, status_code = get_resource(resource_name="ALL", id_token=id_token)
+
+    if status_code == 200:
+        registered_options = document["options"]
+        for key, val in options.items():
+            registered_options[key] = val
+
+        document["options"] = registered_options
+        logger.debug(document)
+        resource, status_code = create_resource(document, id_token)
+
+        return jsonify(resource), status_code
+
+    else:
+        return jsonify({"status": 500, "message": "api server error"}), 500
+
+
 @bp.route("/library", methods=["PUT"])
 def put_library():
     """
