@@ -4,6 +4,7 @@ import './index.css';
 import App from './App'
 import BookTable from './components/booktable';
 import LibraryTable from './components/librarytable';
+import OptionTable from './components/optiontable';
 import Endpoint from './components/endpoint';
 import LibrarySelect from './components/area_oriented_library';
 import { BrowserRouter, Route } from 'react-router-dom';
@@ -19,6 +20,7 @@ ReactDOM.render(
       <Route exact path="/liff/bookmark" render={() => <BookTable uri={"bookmark"} columnNames={["title", "author", "isbn"] } liffId={liffId}/> }/>
       <Route exact path="/liff/library" render={() => <LibraryTable uri={"library"} columnNames={["timestamp", "formal", "libid", "systemid"] } liffId={liffId}/> }/>
       <Route exact path="/liff/onelibrary" render={() => <LibrarySelect liffId={liffId}/> }/>
+      <Route exact path="/liff/option" render={() => <OptionTable liffId={liffId}/> }/>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
