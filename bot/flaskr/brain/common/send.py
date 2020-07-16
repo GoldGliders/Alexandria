@@ -262,7 +262,7 @@ def bookstatus(bookstatus):
     """
 
     flexboxes = []
-    for status in bookstatus:
+    for status, systemid in bookstatus:
         flex_bookstatus = deepcopy(flexbox.flex_bookstatus)
         try:
             flex_bookstatus["hero"]["url"] = "https://3.bp.blogspot.com/-FJiaJ8gidCs/Ugsu-rSFw0I/AAAAAAAAXNA/JFiIUoxggW4/s800/book_tate.png"
@@ -273,7 +273,7 @@ def bookstatus(bookstatus):
                 flex_bookstatus["hero"]["url"] = "https://3.bp.blogspot.com/-FJiaJ8gidCs/Ugsu-rSFw0I/AAAAAAAAXNA/JFiIUoxggW4/s800/book_tate.png"
             """
 
-            library = db.library.filter("libkey", "==", list(status["libkey"])[0])
+            library = db.library.filter("systemid", "==", systemid)
             libid = list(library.keys())[0]
             minitext = deepcopy(flexbox.minitext)
             systemname = library[libid]["systemname"]
@@ -296,9 +296,9 @@ def bookstatus(bookstatus):
                 # status depends on libraries
                 minitext = deepcopy(flexbox.minitext)
                 for libkey in keylist:
-                    short = library[libid]["short"] if library else libkey
+                    # short = library[libid]["short"] if library else libkey
                     state = status["libkey"][libkey]
-                    text += f"{short}: {state}\n"
+                    text += f"{libkey}: {state}\n"
 
                 minitext["text"] = text
                 flex_bookstatus["body"]["contents"].append(minitext)

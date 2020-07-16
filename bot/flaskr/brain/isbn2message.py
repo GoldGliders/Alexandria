@@ -49,7 +49,7 @@ def isbn2message(event, isbn):
 
         for library in favolib:
             try:
-                bookstatus.append(call_api.calil(isbn, library["systemid"]))
+                bookstatus.append((call_api.calil(isbn, library["systemid"]), library["systemid"]))
             except BookNotFound:
                 pass
 
