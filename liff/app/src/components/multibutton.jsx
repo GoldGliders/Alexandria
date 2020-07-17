@@ -1,5 +1,6 @@
 import React from "react"
 import liff from "@line/liff"
+import Button from "@material-ui/core/Button"
 
 class MultiButton extends React.Component{
   constructor(props){
@@ -81,11 +82,11 @@ class MultiButton extends React.Component{
 
   render(){
     return (
-      <button onClick={() => {
+      <Button variant="contained" color="primary" onClick={() => {
         this.multiFunc(this.state.funcName)
       }}>
         {this.state.text}
-      </button>
+      </Button>
     )
   }
 }

@@ -1,6 +1,8 @@
 import React from "react"
 import { initializeLiff } from "./liffInit"
 import liff from "@line/liff"
+import Checkbox from "@material-ui/core/Checkbox"
+import Button from "@material-ui/core/Button"
 
 class OptionTable extends React.Component{
   constructor(props){
@@ -52,12 +54,12 @@ class OptionTable extends React.Component{
         {
           keys.map((key, num) => (
             <div key={num}>
-              <input className="selector" type="checkbox" defaultChecked={options[key]} name={key}/>
+              <Checkbox color="primary" className="selector" type="checkbox" defaultChecked={options[key]} name={key}/>
               {displayName[key]}
             </div>
           ))
         }
-        <button onClick={() => this.sendOption(idToken)}>Save</button>
+        <Button variant="contained" onClick={() => this.sendOption(idToken)}>Save</Button>
       </div>
     )
   }

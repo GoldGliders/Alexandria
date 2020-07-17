@@ -1,6 +1,7 @@
 import React from "react"
 import { initializeLiff } from "./liffInit"
 import liff from "@line/liff"
+import Button from "@material-ui/core/Button"
 
 class LibrarySelect extends React.Component{
   constructor(props){
@@ -119,11 +120,11 @@ class LibrarySelect extends React.Component{
     const table = this.state.scopeField.map((fieldValue, num) => (
       <tr key={num}>
         <td>
-          <button onClick={() => {
+          <Button variant="contained" color="primary" onClick={() => {
             this.getScope(fieldValue, this.state.url, this.state.level)
           }}>
             {fieldValue}
-          </button>
+          </Button>
         </td>
       </tr>
     )
@@ -145,11 +146,11 @@ class LibrarySelect extends React.Component{
             <tr key={rownum}>
               {this.state.libraryColumns.map((col, colnum) => (<td key={colnum}>{fieldValue[col]}</td>))}
               <td>
-                <button onClick={() => {
+                <Button variant="contained" color="primary" onClick={() => {
                   this.putLibrary(fieldValue["libid"], liff.getIDToken(), fieldValue["formal"], this.state.level)
                 }}>
                   register
-                </button>
+                </Button>
               </td>
             </tr>
           ))}
@@ -177,7 +178,7 @@ class LibrarySelect extends React.Component{
     return (
       <div>
         <h1>Succeed in registering {library}</h1>
-        <button onClick={() => {liff.closeWindow()}}>close</button>
+        <Button variant="contained" color="primary" onClick={() => {liff.closeWindow()}}>close</Button>
       </div>
     )
   }
