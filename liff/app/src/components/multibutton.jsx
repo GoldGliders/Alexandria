@@ -1,6 +1,20 @@
 import React from "react"
 import liff from "@line/liff"
 import Button from "@material-ui/core/Button"
+import { withStyles } from "@material-ui/core/styles"
+import SearchIcon from '@material-ui/icons/Search'
+import DeleteIcon from '@material-ui/icons/Delete'
+
+const useStyles = ((theme) => ({
+  button: {
+    marginTop: 8,
+    marginBottom: 1,
+  },
+  icon: {
+    fill: "black",
+    align: "left",
+  }
+}))
 
 class MultiButton extends React.Component{
   constructor(props){
@@ -81,14 +95,20 @@ class MultiButton extends React.Component{
   }
 
   render(){
+    const {classes} = this.props
     return (
-      <Button variant="contained" color="primary" onClick={() => {
+      <Button color="primary" className={classes.button} onClick={() => {
         this.multiFunc(this.state.funcName)
-      }}>
-        {this.state.text}
+      }}
+      >
+        {this.state.funcName === "history"?
+          <SearchIcon className={classes.icon} />:
+          <DeleteIcon className={classes.icon} />
+        }
       </Button>
     )
   }
 }
 
-export default MultiButton
+//export default MultiButton
+export default withStyles(useStyles, {withTheme: true})(MultiButton)

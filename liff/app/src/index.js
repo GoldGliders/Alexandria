@@ -9,18 +9,21 @@ import Endpoint from './components/endpoint';
 import LibrarySelect from './components/area_oriented_library';
 import { BrowserRouter, Route } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
+import Container from "@material-ui/core/Container"
 
 const liffId = "1654371886-xorapzM6"
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Route exact path="/" render={() => <App /> }/>
-      <Route exact path="/liff/" render={() => <Endpoint liffId={liffId}/> }/>
-      <Route exact path="/liff/history" render={() => <BookTable uri={"history"} columnNames={["title", "author", "isbn"] } liffId={liffId}/> }/>
-      <Route exact path="/liff/bookmark" render={() => <BookTable uri={"bookmark"} columnNames={["title", "author", "isbn"] } liffId={liffId}/> }/>
-      <Route exact path="/liff/library" render={() => <LibraryTable uri={"library"} columnNames={["timestamp", "formal", "libid", "systemid"] } liffId={liffId}/> }/>
-      <Route exact path="/liff/onelibrary" render={() => <LibrarySelect liffId={liffId}/> }/>
-      <Route exact path="/liff/option" render={() => <OptionTable liffId={liffId}/> }/>
+      <Container>
+        <Route exact path="/" render={() => <App /> }/>
+        <Route exact path="/liff/" render={() => <Endpoint liffId={liffId}/> }/>
+        <Route exact path="/liff/history" render={() => <BookTable uri={"history"} columnNames={["title", "author", "isbn"] } liffId={liffId}/> }/>
+        <Route exact path="/liff/bookmark" render={() => <BookTable uri={"bookmark"} columnNames={["title", "author", "isbn"] } liffId={liffId}/> }/>
+        <Route exact path="/liff/library" render={() => <LibraryTable uri={"library"} columnNames={["timestamp", "formal", "libid", "systemid"] } liffId={liffId}/> }/>
+        <Route exact path="/liff/onelibrary" render={() => <LibrarySelect liffId={liffId}/> }/>
+        <Route exact path="/liff/option" render={() => <OptionTable liffId={liffId}/> }/>
+      </Container>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
