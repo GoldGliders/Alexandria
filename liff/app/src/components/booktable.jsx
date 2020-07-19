@@ -10,14 +10,14 @@ import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import { withStyles } from "@material-ui/core/styles"
 
+const HEIGHT = 150
 const useStyles = ((theme) => ({
   root: {
     flexGrow: 1,
   },
   card: {
     height: "auto",
-    width: "100%",
-    maxWidth: 400,
+    width: 300,
   },
   button: {
     align: "center"
@@ -27,11 +27,12 @@ const useStyles = ((theme) => ({
     margin: 0,
   },
   image: {
-    height: 150,
+    height: HEIGHT,
     width: "auto",
   },
   textarea: {
     textAlign: "center",
+    height: HEIGHT,
     width: "100%",
     padding: 0,
     "&:last-child": {
@@ -39,8 +40,13 @@ const useStyles = ((theme) => ({
     },
   },
   text: {
-    marginTop: 4,
+    margin: 8,
     padding: 0,
+  },
+  button: {
+    position: "absolute",
+    marginLeft: "250px !important",
+    marginTop: "60px",
   }
 }))
 
@@ -123,7 +129,7 @@ class BookTable extends React.Component{
       const author = metadata("author")
 
       return (
-        <Grid container justify="center" alignItems="center" key={rowNum} item xs={12} zeroMinWidth>
+        <Grid container justify="center" alignItems="center" key={rowNum} item xs={12} sm={6} md={4} lg={3} zeroMinWidth>
           <Card variant="outlined" className={classes.card}>
             <CardActions className={classes.media}>
               <CardMedia
@@ -156,12 +162,11 @@ class BookTable extends React.Component{
                     </Typography>
                   </Grid>
                   */}
-                  <Grid item xs={9}></Grid>
-                  <Grid item xs={3}>
-                    {this.multiButton(this.state.uri, isbn, title, this.state.os)}
-                  </Grid>
                 </Grid>
               </CardContent>
+            <div className={classes.button}>
+                {this.multiButton(this.state.uri, isbn, title, this.state.os)}
+            </div>
             </CardActions>
           </Card>
         </Grid>

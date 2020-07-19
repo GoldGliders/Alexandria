@@ -7,12 +7,9 @@ import DeleteIcon from '@material-ui/icons/Delete'
 
 const useStyles = ((theme) => ({
   button: {
-    marginTop: 8,
-    marginBottom: 1,
   },
   icon: {
     fill: "black",
-    align: "left",
   }
 }))
 
