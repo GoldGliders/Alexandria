@@ -8,6 +8,9 @@ import CardActions from "@material-ui/core/CardActions"
 import CardContent from "@material-ui/core/CardContent"
 import CardMedia from "@material-ui/core/CardMedia"
 import Grid from "@material-ui/core/Grid"
+import Switch from "@material-ui/core/Switch"
+import FormGroup from '@material-ui/core/FormGroup'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Typography from "@material-ui/core/Typography"
 import { withStyles } from "@material-ui/core/styles"
 
@@ -25,6 +28,9 @@ const useStyles = ((theme) => ({
   row: {
     textAlign: "left",
   },
+  switches: {
+    alignItems: "center",
+  }
 }))
 
 class OptionTable extends React.Component{
@@ -74,36 +80,40 @@ class OptionTable extends React.Component{
     const keys = Object.keys(options)
     return (
       <div>
-        <Grid container >
-          {
-            keys.map((key, num) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={num}>
-                <Grid >
-                  <Checkbox color="primary" className="selector" type="checkbox" defaultChecked={options[key]} name={key}/>
-                  {displayName[key]}
-                </Grid>
-              </Grid>
-            ))
-          }
-        </Grid>
-        <Grid container justify="center" className={classes.button} >
-          <Button variant="contained" onClick={() => this.sendOption(idToken)}>Save</Button>
+        <Grid container justify="center">
+          <FormGroup>
+            {
+              keys.map((key, num) => (
+                <FormControlLabel
+                  control={
+                    <Switch color="primary" className="selector" type="checkbox"
+                      defaultChecked={options[key]} value="checked" name={key}
+                      //onChange={this.handleChange}
+                    />}
+                  label={displayName[key]}
+                  key={num}
+                />
+              ))
+            }
+          </FormGroup>
+          <Grid container justify="center" className={classes.button} >
+            <Button variant="contained" onClick={() => this.sendOption(idToken)}>Save</Button>
+          </Grid>
         </Grid>
       </div>
     )
   }
 
   sendOption(idToken){
-    const checkbox = Array.from(document.getElementsByClassName("selector"))
-    let jsn = {}
-    checkbox.map((box) => {
-      jsn = Object.assign(jsn, {[box.name]: box.checked})
+    const checkbox = Array.from(document.getElementsByClassName("MuiSwitch-input"))
+    let options = {}
+    checkbox.forEach((box) => {
+      options[box.name] = box.checked
     })
-
     fetch(`/api/option`, {
         method: "PUT",
         body: JSON.stringify({
-          items: jsn,
+          items: options,
           idToken: idToken
         }),
         headers: {
