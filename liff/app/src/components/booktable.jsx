@@ -66,7 +66,7 @@ class BookTable extends React.Component{
       liffId: this.props.liffId,
       os: null,
       error: null,
-      erro_msg: null,
+      error_msg: null,
     }
     this.getResource = this.getResource.bind(this)
     this.row = this.row.bind(this)
@@ -84,12 +84,33 @@ class BookTable extends React.Component{
           const timestamps = res["items"].map(x => new Date(x["timestamp"]*1000).toLocaleDateString())
           const rows = res["items"].map(item => this.state.columnNames.map(key => item["bookmeta"][key]))
 
-          this.setState({
-            timestamps: timestamps.reverse(),
-            bookmetas: rows.reverse(),
-            os: resp["os"],
-            error: false
-          })
+          if (rows.length === 0){
+            let msg = ""
+            switch(this.state.uri){
+              case "history":
+                msg = "You should search any books."
+                break
+
+              case "bookmark":
+                msg = "You should register your bookmarks."
+                break
+
+              default:
+                break
+            }
+            this.setState({
+              os: resp["os"],
+              error: true,
+              error_msg: msg,
+            })
+          }else{
+            this.setState({
+              timestamps: timestamps.reverse(),
+              bookmetas: rows.reverse(),
+              os: resp["os"],
+              error: false
+            })
+          }
         })
         .catch((err) => {
           this.setState({
@@ -98,7 +119,6 @@ class BookTable extends React.Component{
             error: true,
             error_msg: err.message
           })
-          liff.logout()
         })
     }else{
       this.setState({
@@ -107,7 +127,6 @@ class BookTable extends React.Component{
         error: true,
         error_msg: 503
       })
-      liff.logout()
     }
   }
 
@@ -185,9 +204,10 @@ class BookTable extends React.Component{
   render(){
     const {classes} = this.props
     if (this.state.error){
+      liff.logout()
       return(
         <div>
-          <h1>api server error</h1>
+          <h1>{this.state.error_msg}</h1>
         </div>
       )
     }else{
