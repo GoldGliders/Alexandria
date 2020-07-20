@@ -121,7 +121,7 @@ class OptionTable extends React.Component{
         }
     })
       .then((res) => {
-        location.reload()
+        window.location.reload()
       })
       .catch((err) => {
         alert(`FAIL ${err.error_msg}`)

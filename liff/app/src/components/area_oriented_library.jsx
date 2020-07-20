@@ -2,6 +2,61 @@ import React from "react"
 import { initializeLiff } from "./liffInit"
 import liff from "@line/liff"
 import Button from "@material-ui/core/Button"
+import Card from "@material-ui/core/Card"
+import CardActions from "@material-ui/core/CardActions"
+import CardContent from "@material-ui/core/CardContent"
+import CardMedia from "@material-ui/core/CardMedia"
+import Grid from "@material-ui/core/Grid"
+import Switch from "@material-ui/core/Switch"
+import FormGroup from '@material-ui/core/FormGroup'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Typography from "@material-ui/core/Typography"
+import { withStyles } from "@material-ui/core/styles"
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
+import FavoriteIcon from '@material-ui/icons/Favorite'
+import { pink, grey } from '@material-ui/core/colors'
+
+const useStyles = ((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  card: {
+    margin: 16,
+    padding: 16,
+  },
+  innertext: {
+    textAlign: "left",
+    width: 220,
+  },
+  innercard: {
+    margin: 4,
+    height: 75,
+    width: 300,
+    padding: 0,
+  },
+  areaRow: {
+    textAlign: "center",
+  },
+  text: {
+    textAlign: "center",
+  },
+  textarea: {
+  },
+  button: {
+    margin: 8,
+  },
+  librarybutton: {
+    position: "absolute",
+    padding: 0,
+    marginLeft: "220px !important",
+  },
+  row: {
+    textAlign: "left",
+  },
+  switches: {
+    alignItems: "center",
+  }
+}))
 
 class LibrarySelect extends React.Component{
   constructor(props){
@@ -17,22 +72,47 @@ class LibrarySelect extends React.Component{
       libraryColumns: ["formal"],
       url: "/api/onelibrary",
       level: 0,
+      scope: "",
+      libids: null,
       error: false,
       error_msg: null
     }
+    this.getResource = this.getResource.bind(this)
     this.getScope = this.getScope.bind(this)
     this.putLibrary = this.putLibrary.bind(this)
+    this.removeResourse = this.removeResourse.bind(this)
     this.scopeButton = this.scopeButton.bind(this)
     this.libraryTable = this.libraryTable.bind(this)
     this.scopeTable = this.scopeTable.bind(this)
-    this.registerTable = this.registerTable.bind(this)
+    //this.registerTable = this.registerTable.bind(this)
   }
 
   componentDidMount(){
-    initializeLiff(this.state.liffId, ()=>{})
+    initializeLiff(this.state.liffId, this.getResource)
+  }
+
+  getResource(resp){
+    if (resp["status"] === "ok"){
+      fetch(`/api/library?idToken=${resp["idToken"]}`)
+        .then(res => res.json())
+        .then((res) => {
+          const rows = res["items"].map(item => item["libid"])
+          this.setState({
+            libids: rows,
+            idToken: resp["idToken"]
+          })
+        })
+        .catch((err) => {
+          this.setState({
+            error: true,
+            error_msg: err.message
+          })
+        })
+    }
   }
 
   getScope(fieldValue, url, level){
+    //level = level === 3? level: level + 1
     level = level + 1
     let fieldName = ""
     switch (level){
@@ -50,6 +130,7 @@ class LibrarySelect extends React.Component{
     }
 
     url = url + `${fieldName}=${fieldValue}`
+    const scope = `${this.state.scope}${fieldValue}>`
     fetch(`${url}&level=${level}`)
       .then(res => res.json())
       .then((res) => {
@@ -72,13 +153,14 @@ class LibrarySelect extends React.Component{
         this.setState(
           Object.assign(
             response,
-            {scopeField: res["items"], selectedField: fieldValue, url: url, level: level, error: false}
+            {scopeField: res["items"], selectedField: fieldValue, url: url, level: level, error: false, scope: scope}
           )
         )
       })
       .catch((err) => {
         this.setState({error: true, error_msg: err.message})
-      })
+      }
+    )
   }
 
   putLibrary(libid, idToken, formal, level){
@@ -95,17 +177,18 @@ class LibrarySelect extends React.Component{
     })
       .then(res => res.json())
       .then((res) => {
-        if (res.status == 200){
+       if (res.status === 200){
+         const libids = this.state.libids.concat([libid])
           this.setState({
-            selectedField: formal,
             selectedLibrary: libid,
-            level: level + 1
+            libids: libids,
           })
         }else{
           this.setState({
             error: true,
             error_msg: res.message
           })
+          alert(`FAIL ${res.message}`)
         }
       })
       .catch((err) => {
@@ -113,67 +196,116 @@ class LibrarySelect extends React.Component{
           error: true,
           error_msg: err.message
         })
+        alert(`FAIL ${err.message}`)
       })
   }
 
-  scopeButton(){
+  scopeButton(classes){
     const table = this.state.scopeField.map((fieldValue, num) => (
-      <tr key={num}>
-        <td>
-          <Button variant="contained" color="primary" onClick={() => {
-            this.getScope(fieldValue, this.state.url, this.state.level)
-          }}>
-            {fieldValue}
-          </Button>
-        </td>
-      </tr>
+      <Grid item xs={6} key={num} className={classes.areaRow}>
+        <Button variant="contained" color="primary" onClick={() => {
+          this.getScope(fieldValue, this.state.url, this.state.level)
+        }} className={classes.button}>
+          {fieldValue}
+        </Button>
+      </Grid>
+    ))
+    return (
+      <Grid container justify="center">
+        {table}
+      </Grid>
     )
-    )
-    return table
   }
 
 
-  libraryTable = () => {
-    return (<div>
-      <table>
-        <thead>
-          <tr>
-            {this.state.libraryColumns.map((col, num)=> (<th key={num}>{col}</th>))}
-          </tr>
-        </thead>
-        <tbody>
-          {this.state.scopeField.map((fieldValue, rownum) => (
-            <tr key={rownum}>
-              {this.state.libraryColumns.map((col, colnum) => (<td key={colnum}>{fieldValue[col]}</td>))}
-              <td>
-                <Button variant="contained" color="primary" onClick={() => {
-                  this.putLibrary(fieldValue["libid"], liff.getIDToken(), fieldValue["formal"], this.state.level)
+  removeResourse(resourceName, targetName, targetId, idToken){
+    fetch(`/api/${resourceName}`, {
+      method: "DELETE",
+      body: JSON.stringify({
+        targetId: targetId,
+        idToken: idToken
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    })
+      .then(res => res.json())
+      .then((res) => {
+        if (res.status === 204){
+          this.setState({libids: this.state.libids.filter(item => item !== targetId)})
+        }else{
+          alert(`FAIL ${res.message}`)
+        }
+      })
+      .catch((err) => {
+        alert(`FAIL ${err.message}`)
+      })
+  }
+
+  libraryTable = (classes) => {
+    const rows = this.state.scopeField.map((fieldValue, rowNum) => {
+      const formal = fieldValue["formal"]
+      const libid = fieldValue["libid"]
+
+      return (
+        <Grid container justify="center" alignItems="center" item xs={12} sm={6} md={4} lg={3} className={classes.areaRow} key={rowNum} zeroMinWidth>
+          <Card variant="outlined" className={classes.innercard}>
+            <CardActions>
+              <CardContent className={classes.textarea}>
+                <Typography color="textPrimary" variant="body1" component="h2" className={classes.innertext}>
+                  {formal}
+                </Typography>
+              </CardContent>
+              <CardActions className={classes.librarybutton}>
+                <Button onClick={() => {
+                  this.state.libids.includes(libid)?
+                    this.removeResourse("library", "", libid, this.state.idToken):
+                    this.putLibrary(fieldValue["libid"], liff.getIDToken(), fieldValue["formal"], this.state.level)
                 }}>
-                  register
+                  {
+                    this.state.libids.includes(libid)?
+                      <FavoriteIcon style={{fill: pink[400]}} />:
+                      <FavoriteBorderIcon style={{fill: grey[400]}} />
+                  }
                 </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>)
+              </CardActions>
+            </CardActions>
+          </Card>
+        </Grid>
+      )})
+
+    return (
+      <div>
+        <Grid container justify="center">
+          <Grid item xs={12} sm={4}>
+            <Typography color="textPrimary" variant="h6" component="h1" className={classes.text}>
+              {this.state.level === 0? this.state.selectedField: this.state.scope}
+            </Typography>
+          </Grid>
+          <Grid container justify="center">
+            {rows}
+          </Grid>
+        </Grid>
+      </div>
+    )
   }
 
-  scopeTable = () => {
-    return (<div>
-      <table>
-        <thead>
-          <tr>
-            <th>{this.state.selectedField}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.scopeButton()}
-        </tbody>
-      </table>
-    </div>)
+  scopeTable = (classes) => {
+    return (
+      <div>
+        <Grid container>
+          <Grid item xs={12} sm={4}>
+            <Typography color="textPrimary" variant="h6" component="h1" className={classes.text}>
+              {this.state.level === 0? this.state.selectedField: this.state.scope}
+            </Typography>
+          </Grid>
+        </Grid>
+        {this.scopeButton(classes)}
+      </div>
+    )
   }
 
+  /*
   registerTable = (library) => {
     return (
       <div>
@@ -182,8 +314,10 @@ class LibrarySelect extends React.Component{
       </div>
     )
   }
+   */
 
   render(){
+    const {classes} = this.props
     if (this.state.error){
       liff.logout()
       return(
@@ -191,14 +325,12 @@ class LibrarySelect extends React.Component{
           <h1>{this.state.error_msg}</h1>
         </div>
       )
-    }else if (this.state.level == 3){
-      return this.libraryTable()
-    }else if (this.state.level == 4){
-      return this.registerTable(this.state.selectedField)
+    }else if (this.state.level >= 3){
+      return this.libraryTable(classes)
     }else{
-      return this.scopeTable()
+      return this.scopeTable(classes)
     }
   }
 }
 
-export default LibrarySelect
+export default withStyles(useStyles, {withTheme: true})(LibrarySelect)
