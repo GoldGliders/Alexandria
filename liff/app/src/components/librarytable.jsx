@@ -66,12 +66,19 @@ class LibraryTable extends React.Component{
         .then((res) => {
           const rows = res["items"].map(item => this.state.columnNames.map(key => item[key]))
 
-          this.setState({
-            timestamps: null,
-            libraries: rows,
-            os: resp["os"],
-            error: false
-          })
+          if (rows.length === 0){
+            this.setState({
+              error: true,
+              error_msg: "You should register for any favorite library.",
+            })
+          }else{
+            this.setState({
+              timestamps: null,
+              libraries: rows,
+              os: resp["os"],
+              error: false
+            })
+          }
         })
         .catch((err) => {
           this.setState({
@@ -149,6 +156,9 @@ class LibraryTable extends React.Component{
       return(
         <div>
           <h1>{this.state.error_msg}</h1>
+          <Fab color="primary" aria-label="add" className={classes.fab} href="/liff/onelibrary">
+            <AddIcon />
+          </Fab>
         </div>
       )
     }else{
