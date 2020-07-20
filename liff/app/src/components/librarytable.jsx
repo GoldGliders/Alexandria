@@ -7,6 +7,8 @@ import CardActions from "@material-ui/core/CardActions"
 import CardContent from "@material-ui/core/CardContent"
 import CardMedia from "@material-ui/core/CardMedia"
 import Grid from "@material-ui/core/Grid"
+import Fab from "@material-ui/core/Fab"
+import AddIcon from '@material-ui/icons/Add'
 import Typography from "@material-ui/core/Typography"
 import { withStyles } from "@material-ui/core/styles"
 
@@ -27,7 +29,12 @@ const useStyles = ((theme) => ({
     position: "absolute",
     padding: 0,
     marginLeft: "220px !important",
-  }
+  },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  },
 }))
 
 class LibraryTable extends React.Component{
@@ -150,6 +157,9 @@ class LibraryTable extends React.Component{
           <Grid container spacing={1}>
             {this.row(classes)}
           </Grid>
+          <Fab color="primary" aria-label="add" className={classes.fab} href="/liff/onelibrary">
+            <AddIcon />
+          </Fab>
         </div>
       )
     }
