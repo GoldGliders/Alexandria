@@ -20,4 +20,4 @@ bot-log:
 api-log:
 	docker-compose logs -f --tail=30 api
 liff-log:
-	docker-compose logs -f --tail=30 api
+	docker-compose logs -f --tail=30 liff
