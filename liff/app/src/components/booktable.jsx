@@ -45,7 +45,12 @@ const useStyles = ((theme) => ({
   },
   button: {
     position: "absolute",
-    marginLeft: "250px !important",
+    marginLeft: "240px !important",
+    marginTop: "60px",
+  },
+  button1: {
+    position: "absolute",
+    marginLeft: "180px !important",
     marginTop: "60px",
   }
 }))
@@ -164,7 +169,7 @@ class BookTable extends React.Component{
                   */}
                 </Grid>
               </CardContent>
-            <div className={classes.button}>
+            <div className={this.state.uri === "bookmark"? classes.button1: classes.button}>
                 {this.multiButton(this.state.uri, isbn, title, this.state.os)}
             </div>
             </CardActions>

@@ -1,12 +1,14 @@
 import React from "react"
 import liff from "@line/liff"
 import Button from "@material-ui/core/Button"
+import Grid from "@material-ui/core/Grid"
 import { withStyles } from "@material-ui/core/styles"
 import SearchIcon from '@material-ui/icons/Search'
 import DeleteIcon from '@material-ui/icons/Delete'
 
 const useStyles = ((theme) => ({
   button: {
+    padding: 0,
   },
   icon: {
     fill: "black",
@@ -94,15 +96,23 @@ class MultiButton extends React.Component{
   render(){
     const {classes} = this.props
     return (
-      <Button color="primary" className={classes.button} onClick={() => {
-        this.multiFunc(this.state.funcName)
-      }}
-      >
-        {this.state.funcName === "history"?
-          <SearchIcon className={classes.icon} />:
-          <DeleteIcon className={classes.icon} />
+      <div>
+        {
+          this.state.funcName === "bookmark"? (
+            <Button color="primary" className={classes.button} onClick={() => {this.multiFunc("history")}}>
+              <SearchIcon className={classes.icon} />
+            </Button>
+          ): (
+          null
+          )
         }
-      </Button>
+        <Button color="primary" className={classes.button} onClick={() => {this.multiFunc(this.state.funcName)}}>
+          {this.state.funcName === "history"?
+            <SearchIcon className={classes.icon} />:
+            <DeleteIcon className={classes.icon} />
+          }
+        </Button>
+        </div>
     )
   }
 }
