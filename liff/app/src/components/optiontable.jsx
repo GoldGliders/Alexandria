@@ -140,9 +140,7 @@ class OptionTable extends React.Component{
     }else{
       return (
         <div>
-          <Card variant="outlined" className={classes.card}>
-            {this.row(this.state.options, this.state.displayName, this.state.idToken, classes)}
-          </Card>
+          {this.row(this.state.options, this.state.displayName, this.state.idToken, classes)}
         </div>
       )
     }
