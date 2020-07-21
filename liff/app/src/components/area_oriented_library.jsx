@@ -5,11 +5,7 @@ import Button from "@material-ui/core/Button"
 import Card from "@material-ui/core/Card"
 import CardActions from "@material-ui/core/CardActions"
 import CardContent from "@material-ui/core/CardContent"
-import CardMedia from "@material-ui/core/CardMedia"
 import Grid from "@material-ui/core/Grid"
-import Switch from "@material-ui/core/Switch"
-import FormGroup from '@material-ui/core/FormGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Typography from "@material-ui/core/Typography"
 import { withStyles } from "@material-ui/core/styles"
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
@@ -127,6 +123,9 @@ class LibrarySelect extends React.Component{
       case 3:
         fieldName = "&city"
         break
+
+      default:
+        break
     }
 
     url = url + `${fieldName}=${fieldValue}`
@@ -135,7 +134,6 @@ class LibrarySelect extends React.Component{
       .then(res => res.json())
       .then((res) => {
         let response = {}
-        let field = ""
         switch (level){
           case 1:
             response = {selectedArea: fieldValue}
@@ -147,6 +145,9 @@ class LibrarySelect extends React.Component{
 
           case 3:
             response = {selectedCity: fieldValue}
+            break
+
+          default:
             break
         }
 

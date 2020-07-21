@@ -1,7 +1,6 @@
 import React from "react"
 import liff from "@line/liff"
 import Button from "@material-ui/core/Button"
-import Grid from "@material-ui/core/Grid"
 import { withStyles } from "@material-ui/core/styles"
 import SearchIcon from '@material-ui/icons/Search'
 import DeleteIcon from '@material-ui/icons/Delete'
@@ -63,7 +62,7 @@ class MultiButton extends React.Component{
         .then(res => res.json())
         .then((res) => {
           if (res.status === 204){
-            location.reload()
+            window.location.reload()
           }else{
             alert(`FAIL ${res.message}`)
           }

@@ -5,7 +5,6 @@ import liff from "@line/liff"
 import Card from "@material-ui/core/Card"
 import CardActions from "@material-ui/core/CardActions"
 import CardContent from "@material-ui/core/CardContent"
-import CardMedia from "@material-ui/core/CardMedia"
 import Grid from "@material-ui/core/Grid"
 import Fab from "@material-ui/core/Fab"
 import AddIcon from '@material-ui/icons/Add'
@@ -114,7 +113,7 @@ class LibraryTable extends React.Component{
     const rows = this.state.libraries.map((library, rowNum) => {
 
       const metadata = (name) => library[this.state.columnNames.indexOf(name)]
-      const timestamp = new Date(metadata("timestamp")*1000).toLocaleDateString()
+      //const timestamp = new Date(metadata("timestamp")*1000).toLocaleDateString()
       const formal = metadata("formal")
       const libid = metadata("libid")
 

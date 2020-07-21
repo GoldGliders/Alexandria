@@ -19,9 +19,6 @@ const useStyles = ((theme) => ({
     height: "auto",
     width: 300,
   },
-  button: {
-    align: "center"
-  },
   media: {
     padding: 0,
     margin: 0,
@@ -141,6 +138,9 @@ class BookTable extends React.Component{
 
       case "bookmark":
         return  <MultiButton funcName={uri} text="remove" isbn={isbn} title={title} idToken={liff.getIDToken()}/>
+
+      default:
+        break
     }
   }
 
