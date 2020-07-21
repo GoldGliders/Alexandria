@@ -11,7 +11,8 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import Container from "@material-ui/core/Container"
 
-const liffId = "1654371886-xorapzM6"
+const liffId = process.env.REACT_APP_liffId
+
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
