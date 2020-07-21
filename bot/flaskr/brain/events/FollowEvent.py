@@ -34,7 +34,7 @@ def followevent(event=None):
 
         db.user.set(hashed_userid, user_doc)
         logger.info("Successed in registaring new follower!")
-        status = "登録アザス"
+        status = """登録ありがとうございます。\nメニューにて"Help"を参照してください。"""
 
     except DuplicateUserError:
         logger.info("This user is already registared.")
