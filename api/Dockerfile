@@ -1,11 +1,19 @@
 FROM python:3.8
-COPY ./requirements.txt /tmp
-RUN pip install -r /tmp/requirements.txt
 
-RUN mkdir /app
+# copy
+COPY ./requirements.txt /tmp
+
+# make file and directories
 RUN mkdir "/var/log/flask/"
 RUN touch "/var/log/flask/access.log"
 
+# add user
+ARG UID=1000
+RUN useradd -m -u ${UID} alexandria
+
+# install libraries
+RUN pip install -r /tmp/requirements.txt
+
 WORKDIR /app
 
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+ENTRYPOINT ["uwsgi", "--ini", "/app/uwsgi.ini"]
