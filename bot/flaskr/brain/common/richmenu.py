@@ -2,7 +2,7 @@ import os
 from flaskr import logger, line_bot_api
 from linebot.models import (
     RichMenu, RichMenuArea, RichMenuSize, RichMenuBounds,
-    MessageAction, URIAction
+    MessageAction, URIAction, CameraRollAction
 )
 
 
@@ -41,23 +41,23 @@ def create_richmenu():
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*1, y=H*0, width=W, height=H),
-                action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6/library", label="library")
-            ),
-            RichMenuArea(
-                bounds=RichMenuBounds(x=W*2, y=H*0, width=W, height=H),
                 action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6/history", label="history")
             ),
             RichMenuArea(
+                bounds=RichMenuBounds(x=W*2, y=H*0, width=W, height=H),
+                action=CameraRollAction(label="cameraroll")
+            ),
+            RichMenuArea(
                 bounds=RichMenuBounds(x=W*0, y=H*1, width=W, height=H),
-                action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6/option", label="option")
+                action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6/library", label="library")
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*1, y=H*1, width=W, height=H),
-                action=MessageAction(text="help")
+                action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6/option", label="option")
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*2, y=H*1, width=W, height=H),
-                action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6/onelibrary", label="onelibrary")
+                action=MessageAction(text="help")
             )
         ]
     )
