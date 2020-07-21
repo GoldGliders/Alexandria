@@ -10,6 +10,7 @@ WIDTH = 2500
 HEIGHT = 1686
 W = WIDTH // 3
 H = HEIGHT // 2
+ENDPOINT = f"https://liff.line.me/{os.environ['liffId']}"
 
 
 def create_richmenu():
@@ -37,11 +38,11 @@ def create_richmenu():
         areas=[
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*0, y=H*0, width=W, height=H),
-                action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6/bookmark", label="bookmark")
+                action=URIAction(uri=f"{ENDPOINT}/bookmark", label="bookmark")
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*1, y=H*0, width=W, height=H),
-                action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6/history", label="history")
+                action=URIAction(uri=f"{ENDPOINT}/history", label="history")
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*2, y=H*0, width=W, height=H),
@@ -49,11 +50,11 @@ def create_richmenu():
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*0, y=H*1, width=W, height=H),
-                action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6/library", label="library")
+                action=URIAction(uri=f"{ENDPOINT}/library", label="library")
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*1, y=H*1, width=W, height=H),
-                action=URIAction(uri="https://liff.line.me/1654371886-xorapzM6/option", label="option")
+                action=URIAction(uri=f"{ENDPOINT}/option", label="option")
             ),
             RichMenuArea(
                 bounds=RichMenuBounds(x=W*2, y=H*1, width=W, height=H),
