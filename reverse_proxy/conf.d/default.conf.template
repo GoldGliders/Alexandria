@@ -4,7 +4,7 @@ server{
     charset UTF-8;
 
     location / {
-        proxy_pass http://liff:3000$request_uri;
+        proxy_pass http://liff:${LIFF_PORT}$request_uri;
     }
 }
 
@@ -14,7 +14,7 @@ server{
     charset UTF-8;
 
     location / {
-        proxy_pass http://bot:4000$request_uri;
+        proxy_pass http://bot:${BOT_PORT}$request_uri;
     }
 }
 
@@ -24,7 +24,7 @@ server{
     charset UTF-8;
 
     location / {
-        proxy_pass http://api:5000$request_uri;
+        proxy_pass http://api:${API_PORT}$request_uri;
     }
 }
 
@@ -36,24 +36,24 @@ server{
 
     location /bot/ {
         rewrite /bot/(.*) /$1 break;
-        proxy_pass http://bot:4000;
+        proxy_pass http://bot:${BOT_PORT};
         proxy_redirect off;
         proxy_set_header Host $host;
     }
 
     location /api/ {
         rewrite /api/(.*) /$1 break;
-        proxy_pass http://api:5000;
+        proxy_pass http://api:${API_PORT};
         proxy_redirect off;
         proxy_set_header Host $host;
     }
 
     location /liff/ {
-       proxy_pass http://liff:3000/$request_uri;
+       proxy_pass http://liff:${LIFF_PORT}/$request_uri;
     }
 
     location / {
-        proxy_pass http://liff:3000$request_uri;
+        proxy_pass http://liff:${LIFF_PORT}$request_uri;
     }
     error_page 400 402 403 404 /40x.html;
     location = /40x.html{
