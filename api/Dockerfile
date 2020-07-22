@@ -16,4 +16,4 @@ RUN pip install -r /tmp/requirements.txt
 
 WORKDIR /app
 
-ENTRYPOINT ["uwsgi", "--ini", "/app/uwsgi.ini"]
+ENTRYPOINT ["uwsgi", "--ini", "/app/uwsgi.ini", "-d"]
