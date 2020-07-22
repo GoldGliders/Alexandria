@@ -3,6 +3,6 @@ memo.md
 __pycache__
 .env
 instance/
-images/
+images/library/
 _app/
 _liff/
