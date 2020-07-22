@@ -24,9 +24,6 @@ with open("./libraries.csv", "r", encoding="utf-8") as f:
             cnt += 1
             logger.info(f"NO.{cnt} sucess")
 
-        except DuplicateKeyError:
-            logger.info("This user is already registared.")
-
         except Exception as e:
             logger.info("Faild to registaring new library!")
             logger.info(e)
