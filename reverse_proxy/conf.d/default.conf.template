@@ -1,67 +1,58 @@
-server{
-    listen 80;
-    server_name liff.${NGINX_HOSTNAME};
-    charset UTF-8;
-
-    location / {
-        proxy_pass http://liff:${LIFF_PORT}$request_uri;
-    }
+server {
+        listen 80;
+        listen [::]:80;
+        server_name alexandria-app.tk;
+        return 301 https://$host$request_uri;
 }
 
-server{
-    listen 80;
-    server_name bot.${NGINX_HOSTNAME};
-    charset UTF-8;
-
-    location / {
-        proxy_pass http://bot:${BOT_PORT}$request_uri;
-    }
-}
 
 server{
-    listen 80;
-    server_name api.${NGINX_HOSTNAME};
-    charset UTF-8;
+        listen 443 ssl default_server;
+        listen [::]:443 ssl default_server ipv6only=on;
+        server_name alexandria-app.tk;
 
-    location / {
-        proxy_pass http://api:${API_PORT}$request_uri;
-    }
-}
+        ssl_certificate /etc/letsencrypt/live/alexandria-app.tk/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/alexandria-app.tk/privkey.pem;
+        ssl_prefer_server_ciphers on;
+        charset UTF-8;
 
-server{
-    listen 80;
-    server_name ${NGINX_HOSTNAME};
-    charset UTF-8;
+        location / {
+                root /var/www/html;
+                index index.html;
+        location ^~ /.well-known/acme-challenge/ {
+                default_type "text/plain";
+                allow all;
+        }
+        }
+
+        location /bot/ {
+                rewrite /bot/(.*) /$1 break;
+                proxy_pass http://bot:5000;
+                proxy_redirect off;
+                proxy_set_header Host $host;
+        }
+
+        location /api/ {
+                rewrite /api/(.*) /$1 break;
+                proxy_pass http://api:5000;
+                proxy_redirect off;
+                proxy_set_header Host $host;
+        }
+
+        location /liff/ {
+                proxy_pass http://liff:5000/$request_uri;
+        }
 
 
-    location /bot/ {
-        rewrite /bot/(.*) /$1 break;
-        proxy_pass http://bot:${BOT_PORT};
-        proxy_redirect off;
-        proxy_set_header Host $host;
-    }
+        error_page 400 402 403 404 /40x.html;
 
-    location /api/ {
-        rewrite /api/(.*) /$1 break;
-        proxy_pass http://api:${API_PORT};
-        proxy_redirect off;
-        proxy_set_header Host $host;
-    }
+        location = /40x.html{
+                root /var/www/html/;
+        }
 
-    location /liff/ {
-       proxy_pass http://liff:${LIFF_PORT}/$request_uri;
-    }
 
-    location / {
-        proxy_pass http://liff:${LIFF_PORT}$request_uri;
-    }
-    error_page 400 402 403 404 /40x.html;
-    location = /40x.html{
-        root /var/www/html/;
-    }
-
-    error_page 500 502 503 504 /50x.html;
-    location = /50x.html{
-        root /var/www/html/;
-    }
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html{
+                root /var/www/html/;
+        }
 }
