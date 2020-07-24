@@ -7,8 +7,7 @@ services:
     volumes:
       - ./reverse_proxy/html:/var/www/html
     ports:
-      - "443:80"
-      - "80:80"
+      - "5000:80"
     depends_on:
       - bot
       - liff
@@ -48,8 +47,6 @@ services:
   liff:
     container_name: Alexandria-LIFF
     build: ./liff
-    volumes:
-      - ./liff/app:/usr/src/app
     tty: true
     environment:
       - PORT=5000
