@@ -5,6 +5,7 @@ import requests
 from flask import Blueprint, Flask
 from dotenv import load_dotenv
 from flaskr.models import db
+from flask_cors import CORS
 
 load_dotenv()
 bp = Blueprint("api", __name__, static_folder="static", template_folder="template")
@@ -67,5 +68,6 @@ def create_app():
     app.config["JSON_AS_ASCII"] = False
 
     logger.info("create api")
+    CORS(app)
 
     return app

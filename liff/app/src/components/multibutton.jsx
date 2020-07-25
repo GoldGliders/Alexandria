@@ -24,7 +24,8 @@ class MultiButton extends React.Component{
       title:    this.props.title,
       formal:   this.props.formal,
       libid:    this.props.libid,
-      idToken:  this.props.idToken
+      idToken:  this.props.idToken,
+      api_url:  this.props.api_url,
     }
     this.sendIsbn = this.sendIsbn.bind(this)
     this.removeResourse = this.removeResourse.bind(this)
@@ -49,7 +50,8 @@ class MultiButton extends React.Component{
 
   removeResourse(resourceName, targetName, targetId, idToken){
     if (window.confirm(`Do you remove the ${resourceName} below?\n${targetName}`)){
-      fetch(`/api/${resourceName}`, {
+      fetch(`${this.state.api_url}/${resourceName}`, {
+	mode: "cors",
         method: "DELETE",
         body: JSON.stringify({
           targetId: targetId,

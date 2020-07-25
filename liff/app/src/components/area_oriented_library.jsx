@@ -66,12 +66,13 @@ class LibrarySelect extends React.Component{
       selectedCity: null,
       selectedLibrary: null,
       libraryColumns: ["formal"],
-      url: "/api/onelibrary",
+      url: "/onelibrary",
       level: 0,
       scope: "",
       libids: null,
       error: false,
-      error_msg: null
+      error_msg: null,
+      api_url: this.props.api_url,
     }
     this.getResource = this.getResource.bind(this)
     this.getScope = this.getScope.bind(this)
@@ -89,7 +90,7 @@ class LibrarySelect extends React.Component{
 
   getResource(resp){
     if (resp["status"] === "ok"){
-      fetch(`/api/library?idToken=${resp["idToken"]}`)
+      fetch(`${this.state.api_url}/library?idToken=${resp["idToken"]}`, {mode: "cors"})
         .then(res => res.json())
         .then((res) => {
           const rows = res["items"].map(item => item["libid"])
@@ -130,7 +131,7 @@ class LibrarySelect extends React.Component{
 
     url = url + `${fieldName}=${fieldValue}`
     const scope = `${this.state.scope}${fieldValue}>`
-    fetch(`${url}&level=${level}`)
+    fetch(`${this.state.api_url}/${url}&level=${level}`, {mode: "cors"})
       .then(res => res.json())
       .then((res) => {
         let response = {}
@@ -166,7 +167,8 @@ class LibrarySelect extends React.Component{
 
   putLibrary(libid, idToken, formal, level){
     console.log(libid, idToken)
-    fetch("/api/library", {
+    fetch(`${this.state.api_url}/library`, {
+      mode: "cors",
       method: "PUT",
       body: JSON.stringify({
         libid: libid,
@@ -220,7 +222,8 @@ class LibrarySelect extends React.Component{
 
 
   removeResourse(resourceName, targetName, targetId, idToken){
-    fetch(`/api/${resourceName}`, {
+    fetch(`${this.state.api_url}/${resourceName}`, {
+      mode: "cors",
       method: "DELETE",
       body: JSON.stringify({
         targetId: targetId,

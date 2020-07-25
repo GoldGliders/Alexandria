@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App'
 import BookTable from './components/booktable';
 import LibraryTable from './components/librarytable';
 import OptionTable from './components/optiontable';
@@ -12,18 +11,18 @@ import * as serviceWorker from './serviceWorker';
 import Container from "@material-ui/core/Container"
 
 const liffId = process.env.REACT_APP_liffId
+const api_url = "https://api.alexandria-app.tk"
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Container>
-        <Route exact path="/" render={() => <App /> }/>
-        <Route exact path="/liff/" render={() => <Endpoint liffId={liffId}/> }/>
-        <Route exact path="/liff/history" render={() => <BookTable uri={"history"} columnNames={["title", "author", "isbn"] } liffId={liffId}/> }/>
-        <Route exact path="/liff/bookmark" render={() => <BookTable uri={"bookmark"} columnNames={["title", "author", "isbn"] } liffId={liffId}/> }/>
-        <Route exact path="/liff/library" render={() => <LibraryTable uri={"library"} columnNames={["timestamp", "formal", "libid", "systemid"] } liffId={liffId}/> }/>
-        <Route exact path="/liff/onelibrary" render={() => <LibrarySelect liffId={liffId}/> }/>
-        <Route exact path="/liff/option" render={() => <OptionTable liffId={liffId}/> }/>
+        <Route exact path="/" render={() => <Endpoint liffId={liffId}/> }/>
+        <Route exact path="/history" render={() => <BookTable uri={"history"} columnNames={["title", "author", "isbn"] } liffId={liffId} api_url={api_url}/> }/>
+        <Route exact path="/bookmark" render={() => <BookTable uri={"bookmark"} columnNames={["title", "author", "isbn"] } liffId={liffId} api_url={api_url}/> }/>
+        <Route exact path="/library" render={() => <LibraryTable uri={"library"} columnNames={["timestamp", "formal", "libid", "systemid"] } liffId={liffId} api_url={api_url}/> }/>
+        <Route exact path="/onelibrary" render={() => <LibrarySelect liffId={liffId} api_url={api_url}/> }/>
+        <Route exact path="/option" render={() => <OptionTable liffId={liffId} api_url={api_url}/> }/>
       </Container>
     </BrowserRouter>
   </React.StrictMode>,

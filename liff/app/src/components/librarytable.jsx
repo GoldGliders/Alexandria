@@ -47,7 +47,8 @@ class LibraryTable extends React.Component{
       liffId: this.props.liffId,
       os: null,
       error: null,
-      error_msg: null
+      error_msg: null,
+      api_url: this.props.api_url,
     }
     this.getResource = this.getResource.bind(this)
     this.convertTimestamp = this.convertTimestamp.bind(this)
@@ -60,7 +61,7 @@ class LibraryTable extends React.Component{
 
   getResource(resp){
     if (resp["status"] === "ok"){
-      fetch(`/api/${this.state.uri}?idToken=${resp["idToken"]}`)
+      fetch(`${this.state.api_url}/${this.state.uri}?idToken=${resp["idToken"]}`, {mode: "cors"})
         .then(res => res.json())
         .then((res) => {
           const rows = res["items"].map(item => this.state.columnNames.map(key => item[key]))
@@ -138,7 +139,7 @@ class LibraryTable extends React.Component{
             */}
               </CardContent>
               <CardActions className={classes.button}>
-                <MultiButton funcName="library" text="remove" formal={formal} libid={libid} idToken={liff.getIDToken()} />
+                <MultiButton funcName="library" text="remove" formal={formal} libid={libid} idToken={liff.getIDToken()} api_url={this.state.api_url}/>
               </CardActions>
             </CardActions>
           </Card>
@@ -155,7 +156,7 @@ class LibraryTable extends React.Component{
       return(
         <div>
           <h1>{this.state.error_msg}</h1>
-          <Fab color="primary" aria-label="add" className={classes.fab} href="/liff/onelibrary">
+          <Fab color="primary" aria-label="add" className={classes.fab} href="/onelibrary">
             <AddIcon />
           </Fab>
         </div>
@@ -166,7 +167,7 @@ class LibraryTable extends React.Component{
           <Grid container spacing={1}>
             {this.row(classes)}
           </Grid>
-          <Fab color="primary" aria-label="add" className={classes.fab} href="/liff/onelibrary">
+          <Fab color="primary" aria-label="add" className={classes.fab} href="/onelibrary">
             <AddIcon />
           </Fab>
         </div>

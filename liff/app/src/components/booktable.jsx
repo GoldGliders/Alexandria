@@ -64,6 +64,7 @@ class BookTable extends React.Component{
       os: null,
       error: null,
       error_msg: null,
+      api_url: this.props.api_url,
     }
     this.getResource = this.getResource.bind(this)
     this.row = this.row.bind(this)
@@ -75,7 +76,7 @@ class BookTable extends React.Component{
 
   getResource(resp){
     if (resp["status"] === "ok"){
-      fetch(`/api/${this.state.uri}?idToken=${resp["idToken"]}`)
+      fetch(`${this.state.api_url}/${this.state.uri}?idToken=${resp["idToken"]}`, {mode: "cors"})
         .then(res => res.json())
         .then((res) => {
           const timestamps = res["items"].map(x => new Date(x["timestamp"]*1000).toLocaleDateString())
@@ -133,11 +134,11 @@ class BookTable extends React.Component{
         if (os === "web"){
           return null
         }else{
-          return <MultiButton funcName={uri} text="search" isbn={isbn}/>
+          return <MultiButton funcName={uri} text="search" isbn={isbn} api_url={this.state.api_url}/>
         }
 
       case "bookmark":
-        return  <MultiButton funcName={uri} text="remove" isbn={isbn} title={title} idToken={liff.getIDToken()}/>
+        return  <MultiButton funcName={uri} text="remove" isbn={isbn} title={title} idToken={liff.getIDToken()} api_url={this.state.api_url}/>
 
       default:
         break

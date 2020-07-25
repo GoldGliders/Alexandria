@@ -36,7 +36,8 @@ class OptionTable extends React.Component{
       liffId: this.props.liffId,
       idToken: null,
       error: null,
-      error_msg: null
+      error_msg: null,
+      api_url: this.props.api_url,
     }
     this.getResource = this.getResource.bind(this)
     this.row = this.row.bind(this)
@@ -49,7 +50,7 @@ class OptionTable extends React.Component{
 
   getResource(resp){
     if (resp["status"] === "ok"){
-      fetch(`/api/option?idToken=${resp["idToken"]}`)
+      fetch(`${this.state.api_url}/option?idToken=${resp["idToken"]}`, {mode: "cors"})
         .then(res => res.json())
         .then((res) => {
           const options = res["items"]["options"]
@@ -104,7 +105,8 @@ class OptionTable extends React.Component{
     checkbox.forEach((box) => {
       options[box.name] = box.checked
     })
-    fetch(`/api/option`, {
+    fetch(`${this.state.api_url}/option`, {
+	mode: "cors",
         method: "PUT",
         body: JSON.stringify({
           items: options,
